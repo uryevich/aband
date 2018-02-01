@@ -1,0 +1,356 @@
+<?php
+// require 'stat/stat.php';
+require 'db_ini.php';
+
+if (!$_GET["id"]) { $id=1; } else { $id=$_GET["id"]; }
+
+// проверка значения полученного id на "спам"
+if(!preg_match("/^[0-9]+$/", $id)) { $id=1; }
+
+$file_data=get_id($id);
+// if ($file_data == "") {
+//	$id=1;
+//	$file_data=get_id($id);
+//	}
+//	print_r ($file_data);
+$dir=$file_data["dir"];
+$file_name=$file_data["fil"];
+$file=$dir.'/'.$file_name;
+$file_descr=$file_data["descr"];
+$file_descrm=$file_data["descrm"];
+@$file_size_temp=getimagesize($file.'.jpg');
+$file_pan=$file_data["pan"];
+$file_size=$file_size_temp[3];
+
+// есть ли панорама в галерее
+// если есть, то ставим её в первый в списке id
+
+
+$query="SELECT * FROM glrs WHERE dir=$dir";
+$result=mysql_query($query, $dbid) or die ("<font color=#bb0000><b>Can not select from database</b></font>");
+$dir_data=mysql_fetch_array($result);
+$dir_descr=$dir_data["descr"];
+$dir_locat=$dir_data["locat"];
+$dir_date=$dir_data["dat"];
+
+
+
+ $x=0;
+ $z=0;
+ $query="SELECT pan,id FROM files WHERE dir='$dir' ORDER BY fil";
+ $result=mysql_query($query, $dbid) or die ("
+<font color=#bb0000><b>Can not select from database</b></font>");
+    while ($file_id_count=mysql_fetch_array($result)) {
+       if ($file_id_count["pan"]!=1) {
+       $id_all[$x]=$file_id_count["id"];
+         if ($id_all[$x]==$id) {
+         $z=$x;
+         }
+       $x++;
+       }
+       else {
+       $pan=$file_id_count["id"];
+       }
+    }
+//    $x--;
+// title
+if ($file_descr!="") {
+	$title=$file_descr.", ".$dir_descr; 
+	}
+	else {	
+	$title=$dir_descr; 
+	}
+?>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+<HEAD>
+ <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=windows-1251">
+ <META NAME="Keywords" CONTENT="adventure, industrial, places, urban, abandoned, plant, base, zone, завод, зона, место, брошенные, заброшенные, недостроенный, база">
+ <META NAME="Description" CONTENT=<?php echo "\".$dir_descr.", ".$file_descr.\"" ?>>
+<title><?php echo $title; ?>, Abandoned</title>
+<style type="text/css">
+body {
+background-color: #000017;
+background-image: url("abg.png");
+background-repeat: no-repeat;
+}
+hr { border: 1px solid #747687; }
+.text {  font-family: Verdana, Arial; font-size: 11pt; color: #dfdfdf; font-weight: bold; text-decoration: none}
+.stext {  font-family: Arial; font-size: 10pt; color: #cfcfcf; font-weight: bold; text-decoration: none}
+.snbtext {  font-family: Arial; font-size: 9pt; color: #cfcfcf; text-decoration: none}
+.itext {  font-family: Verdana, Arial; font-size: 11pt; color: #dfdfdf; font-weight: bold; font-style: italic; text-decoration: none}
+.ctext {  font-family: Verdana, Arial; font-size: 8pt; color: #a4b6c7; font-weight: bold; font-style: italic; text-decoration: none}
+.utext {  font-family: Arial; font-size: 8pt; color: #a4b6c7; font-style: italic; text-decoration: none}
+.link {  font-family: Verdana, Arial; font-size: 9pt; font-weight: bold}
+</style>
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-15607830-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
+</HEAD>
+<BODY alink="#ff2040" link="#00b0f0" text="#ffffff" vlink="#00b0d0">
+<!-- menu -->
+<?php require ('menu.php') ?>
+<!-- header end -->
+
+<!-- picture part begining -->
+<table align="center" border="0" cellspacing="5" cellpadding="0" width="90%">
+    <tr>
+		<td width="80%">
+			<table align="center" cellspacing="5" cellpadding="0" width="70%">
+				<tr>
+					<td align="center" class="link" colspan="3">
+<a href=<?php echo '"thumb.php?gal='.$dir.'"' ?> class="link">Preview screen</a>
+					</td>
+				</tr>
+<!-- gallery navigation -->
+<?php
+if (isset ($pan)) { // если в галерее есть флаг панорамы
+	if ($file_pan==1) { // если текущая картинка панорама
+		echo '
+   <tr>
+   <td align="center" class="link" colspan="3">
+      <table align="center" bgcolor="#747687" cellpadding="2" cellspacing="0">
+      <tr><td class="link">Panorama</td></tr></table>
+   </td>
+   </tr>
+   ';
+		}
+	else {
+		echo '
+   <tr>
+   <td align="center" class="link" colspan="3">
+<a href="pic.php?id='.$pan.'" class="link">Panorama</a>
+   </td>
+   </tr>
+   ';
+		}
+	}
+?>
+				<tr>
+					<td class="link" align="right">
+   <?php
+   // навигация "previous"
+   if (($z!=0) and ($file_pan!=1)) {
+      echo '
+      <a href="pic.php?id='.$id_all[$z-1].'" title="Previous"> &lt;&lt; </a>
+      ';
+      }
+   else {
+      echo '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
+      }
+   ?>
+					</td>
+					<td>
+<table align="center" cellpadding="0" cellspacing="0">
+<tr>
+<?php
+// ссылки на все файлы в галерее
+for ($c=0; $c<(ceil ($x/2)); $c++) {
+if ($c<9) { $space="&nbsp;"; } else { $space=""; }
+echo '<td class="link" align="center">';
+//  echo 'c='.$c.' x='.$x.'$file_pan='.$file_pan.'<br>'; 
+if ($file_pan==1) {
+	      echo '
+      <a href="pic.php?id='.$id_all[$c+1].'">'.$space.($c+1).$space.'</a>
+      </td>
+      ';
+	}
+	else {
+		if ($c==$z) {
+			echo '
+			<table align="center" bgcolor="#747687" cellpadding="2" cellspacing="1">
+			<tr><td class="link">
+			'.$space.($c+1).$space.'
+			</td></tr></table>
+			</td>
+			';
+			}
+			else {
+			echo '
+			<a href="pic.php?id='.$id_all[$c].'">'.$space.($c+1).$space.'</a>
+			</td>
+			';
+			}
+	}
+   if ($c+1!=(ceil ($x/2))) {
+      echo '
+      <td class="link">
+      <font color="#747687">|</font>
+      </td>
+      ';
+      }
+}
+?>
+</tr></table>
+<table align="center" cellpadding="0" cellspacing="0">
+<tr>
+<?php
+// вторая строчка навигации
+for ($d=$c+1; $d<=$x; $d++) {
+if ($c<9) { $space="&nbsp;"; } else { $space=""; }
+echo '<td class="link" align="center">';
+   if ($d-1==$z) {
+   echo '
+   <table align="center" bgcolor="#747687" cellpadding="2" cellspacing="0">
+   <tr><td class="link">'.$space.($d).$space.'</td></tr></table>
+   </td>
+   ';
+   }
+   else {
+   echo '
+   <a href="pic.php?id='.$id_all[$d-1].'">'.$space.($d).$space.'</a>
+   </td>
+   ';
+   }
+   if ($d!=$x) {
+   echo '
+   <td class="link">
+   <font color="#747687">|</font>
+   </td>
+   ';
+   }
+}
+?>
+</tr>
+</table>
+   </td>
+   <td class="link" align="left">
+   <?php
+   // навигация "next"
+	if ($file_pan==1) {
+		echo '
+		<a href="pic.php?id='.$id_all[$z].'" title="Next"> &gt;&gt; </a>
+		';
+		}
+	else {
+		if ($z+1!=$x) {
+			echo '
+			<a href="pic.php?id='.$id_all[$z+1].'" title="Next"> &gt;&gt; </a>
+			';
+			}
+		else {
+			echo '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
+		}
+	}
+   ?>
+   </td>
+   </tr></table>
+<!--   // навигация галлереи end -->
+</td>
+<td bgcolor="#747687" width="1"><img src="sp.gif" width="1" height="1" border="0">
+</td>
+<td width="198" valign="bottom">
+<!-- galery description -->
+<?php echo '<p align="right" class="stext">'.$dir_descr.' <br>('.$dir_locat.')</p>
+' ?>
+
+</td>
+</tr>
+<tr>
+<td colspan=3 bgcolor="#747687"><img src="sp.gif" width="2" height="2" border="0"></td>
+<tr>
+<td align="center" class="link" rowspan="3">
+
+<?php
+
+	if ($file_pan==1) {
+		if ($z+1!=$x) { // если катинка не последняя, то вяжем к ней ссылку на следующую, 
+						// eсли последняя, то ссылка на thumb
+			echo '<a href="pic.php?id='.$id_all[$z].'">
+			<img src="'.$file.'.jpg" '.$file_size.' border="0" alt="'.$file_descr.'">
+			</a>';
+		} else {
+			echo '<a href="thumb.php?gal='.$dir.'">
+			<img src="'.$file.'.jpg" '.$file_size.' border="0" alt="'.$file_descr.'">
+			</a>';
+		}
+	}
+	else {	
+		if ($z+1!=$x) { // если катинка не последняя, то вяжем к ней ссылку на следующую, 
+						// eсли последняя, то ссылка на thumb
+			echo '<a href="pic.php?id='.$id_all[$z+1].'">
+			<img src="'.$file.'.jpg" '.$file_size.' border="0" alt="'.$file_descr.'">
+			</a>';
+		} else {
+			echo '<a href="thumb.php?gal='.$dir.'">
+			<img src="'.$file.'.jpg" '.$file_size.' border="0" alt="'.$file_descr.'">
+			</a>';
+		}
+	}
+// echo '
+// <p align="center">
+// <a href="#top" class="link" title="Top">&nbsp;_ <u>^</u> _&nbsp;</a></p>
+// ';
+?>
+</td>
+<td rowspan="3" bgcolor="#747687">
+<img src="sp.gif" width="1" height="1" border="0"></td>
+<td align="right" class="text" valign="top">
+<br>
+<p class="itext">
+<?php echo $file_descr; ?>
+</p>
+<p class="snbtext">
+<?php echo $file_descrm; ?>
+</p>
+
+</td>
+</tr>
+<tr>
+<td valign="bottom" rowspan="2">
+<p align="right" class="utext"> Added
+<?php echo $dir_date; ?>
+</p>
+<div align="left">
+<!-- google_ad_start -->
+<script type="text/javascript"><!--
+google_ad_client = "pub-9659481331039989";
+/* 200x90, created 4/1/10 */
+google_ad_slot = "4436538283";
+google_ad_width = 200;
+google_ad_height = 90;
+//-->
+</script>
+<script type="text/javascript"
+src="http://pagead2.googlesyndication.com/pagead/show_ads.js">
+</script>
+<!-- google_ad_end -->
+</div>
+<hr>
+<?php require ('copyright.php'); ?>
+</td>
+</tr>
+</table>
+<hr>
+<div align=right><?php include 'hotlog.php'; ?></div>
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+try {
+var pageTracker = _gat._getTracker("UA-15607830-1");
+pageTracker._trackPageview();
+} catch(err) {}</script>
+</BODY>
+</HTML>
+<?php
+function get_id ($idf)
+	{
+    require 'db_ini.php';
+	$query="SELECT * FROM files WHERE id=$idf";
+	$result=mysql_query($query, $dbid);
+	$file_data=mysql_fetch_array($result);
+    return ($file_data);
+	}
+?>

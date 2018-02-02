@@ -1,5 +1,5 @@
 <?php
-  error_reporting(0);
+//  error_reporting(0);
   session_start();
   if ($_SESSION["user_auth"] != true) { die ('<div align="center">access denied<br><a href="/">Log in</a></div>'); }
 ?>
@@ -8,65 +8,56 @@
 <?php
 
 require 'db_ini.php';
-// количество строк для новых записей
-$add_strings=1; 
 
-// счётчик строк в таблице директорий
-$query="SELECT dir,descr FROM glrs ORDER BY dir";
-$result=mysql_query($query, $dbid) or die("<font color=#bb0000><b>Can't read!</b></font>");
-$counter=0;
-while ($row=mysql_fetch_array($result))
+// number of rows for new inserts
+$add_strings = 1; 
+
+// rows counter in directoryes table
+$query = "SELECT dir,descr FROM glrs ORDER BY dir";
+$result = mysql_query($query, $dbid) or die("<font color=#bb0000><b>Can't read!</b></font>");
+$counter = 0;
+while ($row = mysql_fetch_array($result))
    {
-   $dir_list[$counter]=$row["dir"];
-   $dir_list_name[$counter]=$row["descr"];
+   $dir_list[$counter] = $row["dir"];
+   $dir_list_name[$counter] = $row["descr"];
    $counter++;
    }
-if (isset($_POST["glob_dir"])) $glob_dir=$_POST["glob_dir"];
-if (isset($_GET["glob_dir"])) $glob_dir=$_GET["glob_dir"];
-if (!$glob_dir) $glob_dir=$dir_list[0];
+if (isset($_POST["glob_dir"])) $glob_dir = $_POST["glob_dir"];
+if (isset($_GET["glob_dir"])) $glob_dir = $_GET["glob_dir"];
+if (!$glob_dir) $glob_dir = $dir_list[0]; // if no get/post given
 
-// or !$_GET[glob_dir] ) { $glob_dir=$dir_list[0]; } else { $glob_dir=$_POST[glob_dir]; }
 
-// проверка наличия строк в таблце
-   //$query="SELECT dir FROM glrs";
-   //$result=mysql_query($query, $dbid) or die("<font color=#bb0000><b>can not read</b></font>");
-   //$counter=0;
-   
 ?>
 <title>Admin files, gallery <?php echo $glob_dir; ?></title>
 <meta name=content charset=1251>
-<style type="text/css">
-<!--
-body,td { font-family: Verdana, Arial; font-size : 12px;}
-a:hover { color : #ff3300; }
--->
-</style>
+<link rel="stylesheet" type="text/css" href="edit_section.css">
 </head>
 <body bgcolor="#eeeeee">
 <!-- Menu -->
 <p>This:
 <a href="fileadm.php?glob_dir=<?php echo $glob_dir; ?>">Reload</a> |
- <a href="thumb.php?gal=<?php echo $glob_dir; ?>" target="#new">Gallery index</a><br>
+ <a href="../thumb.php?gal=<?php echo $glob_dir; ?>" target="#new">Gallery index</a><br>
 Menu:
  <a href="galadm.php">Galleryes admin</a> |
  <a href="link_adm.php">Links admin</a> |
  <a href="news_adm.php">News admin</a> |
  <a href="baseadm.php">DB Admin</a> |
  <a href="log.php?logout=1">Logout</a></p>
+ 
 <!-- form for change directory -->
 <form method="post" action="fileadm.php">select directory:
 <select name="glob_dir" class=inputbox>
-    <?php
-    $counter=0;
-      while (list($key_arr,$dir_a)=each($dir_list))
+<?php
+$counter = 0;
+      while (list($key_arr,$dir_a) = each($dir_list))
       {
-      // $dir_a=$row[dir];
+      // $dir_a = $row[dir];
       echo '<option value="'.$dir_a.'"';
-         if ($dir_a==$glob_dir) {
+         if ($dir_a == $glob_dir) {
          echo ' selected';
          }
          else {
-            if ($counter==0 and $glob_dir==0) {
+            if ($counter == 0 and $glob_dir == 0) {
             echo ' selected';
             }
          }
@@ -80,30 +71,28 @@ Menu:
    </form>
 <?php
 
-// 4 cases: 
+// 4 cases on load: 
 // 1. edit
 // 2. delete
 // 3. add
 
 // Edit section
-// если есть флаг "edit", то пишем данные в таблицу
+// if "edit" flag present then wright data in table
 // print_r ($_POST);
 
 if (isset($_POST["edit"])) {
-   $id=$_POST["id"];
-   $dir=$_POST["dir"];
-   $file=$_POST["file"];
-   $descr=$_POST["descr"];
-   $descrm=$_POST["descrm"];
-   $pan=$_POST[pan];
+   $id = $_POST["id"];
+   $dir = $_POST["dir"];
+   $file = $_POST["file"];
+   $descr = $_POST["descr"];
+   $descrm = $_POST["descrm"];
+   $pan = $_POST[pan];
    echo "<br /><br />Warning!!<br /><br />";
-//   $del=$_POST[del];
-//   $x=$_POST[x];
-//    for ($z=0; $z<=$x; $z++) {
-        $query="UPDATE files SET fil='".$file."',
+
+        $query = "UPDATE files SET fil='".$file."',
         descr='".addslashes($descr)."',descrm='".addslashes($descrm)."',pan='".$pan."'
         WHERE id='".$id."'";
-        $result=mysql_query($query, $dbid) or die("<font color=#bb0000><b>Can't update!</b></font>");
+        $result = mysql_query($query, $dbid) or die("<font color=#bb0000><b>Can't update!</b></font>");
         
 	echo "<br /><b><pre>".$query."</pre></b><br />";
 	echo "<b><font size=\"-1\" color=#558800>Changes has been saved</font></b>";
@@ -111,36 +100,39 @@ if (isset($_POST["edit"])) {
 	
 // Delete section
 if (isset($_GET["delete"])) {
-	$delete_id=$_GET["delete"];
-        $query="DELETE FROM files WHERE id='".$delete_id."'";
-        $result=mysql_query($query, $dbid) or die("<font color=#bb0000><b>Сan't delete row!</b></font>");
+	$delete_id = $_GET["delete"];
+        $query = "DELETE FROM files WHERE id='".$delete_id."'";
+        $result = mysql_query($query, $dbid) or die("<font color=#bb0000><b>Сan't delete row!</b></font>");
 		echo "<br /><b><pre>".$query."</pre></b><br />";
         echo "<b><font size=\"-1\" color=#005500>File with ID ".$delete_id." has been deleted.&nbsp;&nbsp;&nbsp;&nbsp;</font></b><br>\n";
         }
 
 // Add section		
 // если есть флаг "add", то добавляем данные в таблицу
+// if "add" flag present than add data to table
 if (isset($_POST["add"])) {
-   $id=$_POST["id"];
-   $dir=$_POST["dir"];
-   $file=$_POST["file"];
-   $descr=$_POST["descr"];
-   $descrm=$_POST["descrm"];
-   $pan=$_POST["pan"];
+   $id = $_POST["id"];
+   $dir = $_POST["dir"];
+   $file = $_POST["file"];
+   $descr = $_POST["descr"];
+   $descrm = $_POST["descrm"];
+   $pan = $_POST["pan"];
+   
 //"add" cycle start
 for ($z=0; $z<$add_strings; $z++) {
-    if ($file[$z]==TRUE) {
-    $query="SELECT * FROM files WHERE dir='$glob_dir' AND fil='$file[$z]'";
-    $result=mysql_query($query, $dbid) or die("<font color=#bb0000><b>Сan't read (check part)!</b></font>");
-    $row=mysql_fetch_array($result);
-    $dir_b=$row["dir"];
-    $file_b=$row["fil"];
-        if (($glob_dir==$dir_b) and ($file[$z]==$file_b)) {
+    if ($file[$z] == TRUE) {
+    $query = "SELECT * FROM files WHERE dir='$glob_dir' AND fil='$file[$z]'";
+    $result = mysql_query($query, $dbid) or die("<font color=#bb0000><b>Сan't read (check part)!</b></font>");
+    $row = mysql_fetch_array($result);
+    $dir_b = $row["dir"];
+    $file_b = $row["fil"];
+		// check for already existing files and insert data in table
+        if (($glob_dir == $dir_b) and ($file[$z] == $file_b)) {
         echo "<p align=center><font color=#bb0000> File coinsidence at row <b>".$glob_dir.", ( ".$file_b." )</b></font></p>";
         }
         else {
-        $query="INSERT INTO files (id,dir,fil,descr,descrm,pan) VALUES ('".$id[$z]."','".$dir[$z]."','".$file[$z]."','".addslashes($descr[$z])."','".addslashes($descrm[$z])."','".$pan[$z]."')";
-        $result=mysql_query($query, $dbid) or die ("<font color=#bb0000><b>Can't insert new parameters</b></font>");
+        $query = "INSERT INTO files (id,dir,fil,descr,descrm,pan) VALUES ('".$id[$z]."','".$dir[$z]."','".$file[$z]."','".addslashes($descr[$z])."','".addslashes($descrm[$z])."','".$pan[$z]."')";
+        $result = mysql_query($query, $dbid) or die ("<font color=#bb0000><b>Can't insert new parameters</b></font>");
 		echo "<br /><b><pre>".$query."</pre></b><br />";
         echo '<b><font size="-1" color=#005500>File '.$file[$z].'.jpg "'.$descr[$z].'" has been added in directory '.$dir[$z].'</font></b><br>
         ';
@@ -150,10 +142,10 @@ for ($z=0; $z<$add_strings; $z++) {
 } // end of add section
 
 // count id
-$query="SELECT COUNT(*) FROM files";
-$result=mysql_query($query, $dbid) or die("<font color=#bb0000><b>Can't count rows!</b></font>" . mysql_error() . "<br />");
-$arr=mysql_fetch_array($result);
-$max_id=$arr[0];
+$query = "SELECT COUNT(*) FROM files";
+$result = mysql_query($query, $dbid) or die("<font color=#bb0000><b>Can't count rows!</b></font>" . mysql_error() . "<br />");
+$arr = mysql_fetch_array($result);
+$max_id = $arr[0];
 ?>
 <table border="1" cellpadding="2" cellspasing="1">
 <tr valign="top">
@@ -171,15 +163,15 @@ $max_id=$arr[0];
 	<td><b>&nbsp;Pan-flag&nbsp;</b></td>
 </tr>
 <?php
-// check for free id in files table
-$not_match=0;
+// check for empty id in files table
+$not_match = 0;
 for ($i=0; $i<=($add_strings+$max_id-1); $i++) {
-   $query="SELECT id FROM files WHERE id='$i'";
-   if ($result=mysql_query($query)) {
-      $row=mysql_fetch_array($result);
-      $id_string=$row["id"];
-      if ($id_string!=$i) {
-         $new_id[$not_match]=$i;
+   $query = "SELECT id FROM files WHERE id='$i'";
+   if ($result = mysql_query($query)) {
+      $row = mysql_fetch_array($result);
+      $id_string = $row["id"];
+      if ($id_string! = $i) {
+         $new_id[$not_match] = $i;
          $not_match++;
       }
    }
@@ -204,7 +196,7 @@ printf("<input type=\"hidden\" name=\"glob_dir\" value=\"%s\">\n", $glob_dir);
 <div align="right"><input type="submit" name="add" value="-   Add   -"></div>
 </form>
 </td></tr></table>
-<!-- Form for adding end -->
+<!-- end of Form for add new data -->
 
 
 <!-- Editing section start -->
@@ -219,24 +211,24 @@ printf("<input type=\"hidden\" name=\"glob_dir\" value=\"%s\">\n", $glob_dir);
 <td align="center"><b>Delete</b></td>
 </tr>
 <?php
-$tbl_row=0; // fill rows in different colors
-$counter=1;
-$row_color1=' bgcolor=#ffffff';
-$row_color2=' bgcolor=#eeeeee';
+$even = true; // fill rows in different colors
+$counter = 1;
+$row_color1 = ' bgcolor=#ffffff';
+$row_color2 = ' bgcolor=#eeeeee';
 
-$query="SELECT * FROM files WHERE dir='$glob_dir' ORDER BY fil";
-$result=mysql_query($query, $dbid);
-$sql_empty_check=mysql_num_rows($result);
+$query = "SELECT * FROM files WHERE dir='$glob_dir' ORDER BY fil";
+$result = mysql_query($query, $dbid);
+$sql_empty_check = mysql_num_rows($result);
 if ($sql_empty_check>0) {
 	while ($row = mysql_fetch_row($result)) {
-		$ide=$row[0];
-		$filee=$row[2];
-		$descre=$row[3];
-		$descrme=$row[4];
-		$pane=$row[5];
-		// fill rows in different colours
-		$tbl_row++;
-		if (ceil($tbl_row/2)==($tbl_row/2)) { echo "<tr".$row_color1.">\n"; } else { echo "<tr".$row_color2.">\n"; }
+		$ide = $row[0];
+		$filee = $row[2];
+		$descre = $row[3];
+		$descrme = $row[4];
+		$pane = $row[5];
+			// fill rows in different colours
+			if ($even) { echo "<tr".$row_color1.">\n"; } else { echo "<tr".$row_color2.">\n"; }
+			$even = !$even;
 		printf("<td align=\"right\"><a href=\"pic.php?id=%s\" target=\"_blank\"><i> %s</i></a>\n", $ide,$ide);
 		printf(" %s</td>\n", $filee);
 		printf("<td>.jpg</td>\n");
@@ -262,8 +254,8 @@ if ($sql_empty_check>0) {
 // read DIR then DB
 if (isset ($glob_dir) and ($glob_dir!=0))
    {
-   $abase=0;
-   $base=0;
+   $files_in_dir = 0;
+   $entries_wo_files = 0;
    echo '<b>In Database:</b>
    <p align="left">
    Not exist:</p>
@@ -279,13 +271,13 @@ if (isset ($glob_dir) and ($glob_dir!=0))
 	// echo '$dirfile_ext'.$dirfile_ext.'<br>';
         if ($dirfile_ext=="jpg")
         {
-        $abase++;
+        $files_in_dir++;
         $query="SELECT * FROM files WHERE dir='$glob_dir' AND fil='$dirfile'";
         $result=mysql_query($query, $dbid) or die("<font color=#bb0000><b>can not read when search for file '$dirfile'</b></font>");
         $filerecord = mysql_fetch_row($result);
-         if ($dirfile!=$filerecord[2])
+         if ($dirfile != $filerecord[2])
          {
-         $base++;
+         $entries_wo_files++;
          echo 'File '.$dirfile.'.jpg<br>
          ';
          }
@@ -297,13 +289,13 @@ if (isset ($glob_dir) and ($glob_dir!=0))
         }
       }
    echo '</font><hr width="70%">'
-   .$abase.' file(s) total in Dir,<br>'
-   .$base.' file(s) absent.<br>';
+   .$files_in_dir.' file(s) total in Dir,<br>'
+   .$entries_wo_files.' file(s) absent.<br>';
 
 // section 2
 // read DB then DIR
-   $adircont=0;
-   $dircont=0;
+   $entries_in_db=0;
+   $files_no_in_db=0;
    echo '</td>
    <td>&nbsp;&nbsp;</td><td align="right">
    <b>In Directory:</b>
@@ -313,39 +305,24 @@ if (isset ($glob_dir) and ($glob_dir!=0))
    $result=mysql_query($query, $dbid) or die("<font color=#bb0000><b>can not select 'file' from database</b></font>");
       while ($dbfile=mysql_fetch_array($result))
       {
-      $adircont++;
+      $entries_in_db++;
          if (!file_exists ($glob_dir.'/'.$dbfile[0].'.jpg'))
          {
-         $dircont++;
+         $files_no_in_db++;
          echo 'File '.$dbfile[0].'.jpg<br>
          ';
          }
       }
    echo '</font><hr width="70%">'
-   .$adircont.' file(s) total in DB,<br>'
-   .$dircont.' file(s) absent.<br>';
+   .$entries_in_db.' file(s) total in DB,<br>'
+   .$files_no_in_db.' file(s) absent.<br>';
    }
-echo '</td>
-</tr>
-<tr>
-<td colspan=3><hr>
-';
-// count files in directories
-// $query="SELECT dir, COUNT(fil) FROM files GROUP BY dir ORDER BY dir";
-// $result=mysql_query($query, $dbid) or die("<font color=#bb0000><b>can not count rows</b></font>");
-// $mdir_tot=0;
-// $mfile_tot=0;
-// while ($arr=mysql_fetch_array($result)) {
-//   $mdir=$arr[0];
-//   $mfile=$arr[1];
-//   echo '<font size="-1">directory '.$mdir.' content '.$mfile.' files.</font><br>
-//   ';
-//   $mdir_tot++;
-//   $mfile_tot=$mfile_tot+$mfile;
-//   }
-// echo '<hr width="70%">'.$mdir_tot.' directories content '.$mfile_tot.' files total.';
 ?>
 </td>
+</tr>
+<tr>
+	<td colspan=3><hr>
+	</td>
 </tr>
 </table>
 </td>

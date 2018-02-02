@@ -7,18 +7,12 @@
 <head>
 <title>Admin news</title>
 <meta name=content charset=1251>
-<style type="text/css">
-<!--
-body { font-family: Verdana, Arial; font-size : 12px; background-color : #eeeeee; }
-td { font-family: Verdana, Arial; font-size : 12px; }
-a:hover { color : #ff3300; }
--->
-</style>
+<link rel="stylesheet" type="text/css" href="edit_section.css">
 </head>
 <body bgcolor="#eeeeee">
 <p>This:
 <a href="news_adm.php">Reload</a> |
-<a href="news.php" target="_new">News page</a><br>
+<a href="../news.php" target="_new">News page</a><br>
 Menu:
 <a href="galadm.php">Gallery admin</a> |
 <a href="fileadm.php">File admin</a> |
@@ -28,14 +22,6 @@ Menu:
 </p>
 <?php
 require 'db_ini.php';
-
-// echo "<br> -<br>";
-// print_r ($_GET);
-// echo "<br> -<br>";
-
-// echo "<br> -<br>";
-// print_r ($_POST);
-// echo "<br> -<br>";
 
 // 5 cases: 
 // 1. edit
@@ -47,67 +33,62 @@ require 'db_ini.php';
 // edit section
 if (isset($_POST["edit"])) {
 
-   $id=$_POST["id"];
-   $date=$_POST["date"];
-   $descr=$_POST["descr"];
-   if ((isset($_POST["active"])) && ($_POST["active"]=="on")) { $active=1; } else { $active=0; }
+   $id = $_POST["id"];
+   $date = $_POST["date"];
+   $descr = $_POST["descr"];
+   if ((isset($_POST["active"])) && ($_POST["active"] == "on")) { $active = 1; } else { $active = 0; }
 		
         $query = "UPDATE ab_news SET dat='".$date."', descr='".addslashes($descr)."',  active='".$active."' WHERE id=".$id;
-		
-//echo "<br><pre>".$query."</pre><br>";
-
         $result = mysql_query($query, $dbid) or die ("<font color=#bb0000><b>Can't update!</b></font>");
 echo "<b><font size=\"-2\" color=#005500>Changes has been saved.</font></b><br>";
         }
+
 // activate section
 if (isset($_GET["activate"])) {
-	$activate_id=$_GET["activate"];
-        $query="UPDATE ab_news SET active=1 WHERE id='$activate_id'";
-	$result=mysql_query($query, $dbid); // or die("<font color=#bb0000><b>Can't delete row!</b></font>");
+	$activate_id = $_GET["activate"];
+        $query = "UPDATE ab_news SET active=1 WHERE id='$activate_id'";
+	$result = mysql_query($query, $dbid);
         echo "<b><font size=\"-2\" color=#005500>News item ".$activate_id." has been activated&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</font></b><br>\n";
 	}
 
 // deactivate section
 if (isset($_GET["deactivate"])) {
-	$deactivate_id=$_GET["deactivate"];
-        $query="UPDATE ab_news SET active=0 WHERE id='$deactivate_id'";
-	$result=mysql_query($query, $dbid); // or die("<font color=#bb0000><b>Can't delete row!</b></font>");
+	$deactivate_id = $_GET["deactivate"];
+        $query = "UPDATE ab_news SET active=0 WHERE id='$deactivate_id'";
+	$result = mysql_query($query, $dbid);
         echo "<b><font size=\"-2\" color=#005500>News item ".$deactivate_id." has been deactivated&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</font></b><br>\n";
 	}
 
 // delete section
 if (isset($_GET["delete"])) {
-
-	$delete_id=$_GET["delete"];
-        $query="DELETE FROM ab_news WHERE id='$delete_id'";
-	$result=mysql_query($query, $dbid); // or die("<font color=#bb0000><b>Can't delete row!</b></font>");
+	$delete_id = $_GET["delete"];
+        $query = "DELETE FROM ab_news WHERE id='$delete_id'";
+	$result = mysql_query($query, $dbid); // or die("<font color=#bb0000><b>Can't delete row!</b></font>");
         echo "<b><font size=\"-2\" color=#005500>News item ".$delete_id." has been deleted&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</font></b><br>\n";
 	}
 
 // add section
-// if "add" button pressed
+// check is "add" button pressed?
 if (isset ($_POST["add"])) {
-   if (!empty ($_POST["date"])) { $date=$_POST["date"]; } else { $date=0; };
-   if (!empty ($_POST["descr"])) { $descr=$_POST["descr"]; } else { $descr=0; };
-   // $active=$_POST["active"];
-	// empty 'descr' param check
-    if (!empty ($descr)) {
-    $query="SELECT * FROM ab_news WHERE descr='".addslashes($descr)."'";
-    $result=mysql_query($query, $dbid) or die("<font color=#bb0000><b>Can't read!</b></font>");
-    $row=mysql_fetch_array($result);
-    $descr_a=$row["descr"];
-    $date_a=$row["dat"];
-        if ($descr==$descr_a) {
-        echo "<font color=#bb0000> News item <b>".$descr_a."</b> already exist (dated <b>".$date_a."</b></font>";
+   if (!empty ($_POST["date"])) { $date_to_add = $_POST["date"]; } else { $date_to_add = 0; };
+   if (!empty ($_POST["descr"])) { $descr_to_add = $_POST["descr"]; } else { $descr_to_add = 0; };
+	// if !empty 'descr' then add data to db
+    if (!empty ($descr_to_add)) {
+    $query = "SELECT * FROM ab_news WHERE descr='".addslashes($descr_to_add)."'";
+    $result = mysql_query($query, $dbid) or die("<font color=#bb0000><b>Can't read!</b></font>");
+    $row = mysql_fetch_array($result);
+    $descr_in_db = $row["descr"];
+    $date_in_db = $row["dat"];
+        if ($descr_to_add==$descr_in_db) {
+        echo "<font color=#bb0000> News item <b>".$descr_in_db."</b> already exist (dated <b>".$date_in_db."</b></font>";
         }
         else {
-        $query="INSERT INTO ab_news (dat, descr) VALUES (
-		'".$date."',
-		'".addslashes($descr)."')";
-//		echo "<br><pre>".$query."</pre><br>";
-        $result=mysql_query($query, $dbid) or die ("<font color=#bb0000><b>can't insert new parameters</b></font>");
+        $query = "INSERT INTO ab_news (dat, descr) VALUES (
+		'".$date_to_add."',
+		'".addslashes($descr_to_add)."')";
+        $result = mysql_query($query, $dbid) or die ("<font color=#bb0000><b>can't insert new parameters</b></font>");
 
-        echo "<b><font size=\"-2\" color=#005500>News item ".$descr." (dated ".$date.") has been added</font></b>
+        echo "<b><font size=\"-2\" color=#005500>News item ".$descr_to_add." (dated ".$date_to_add.") has been added</font></b>
 <br>";
         }
     } //end of check of empty 'descr' param
@@ -122,8 +103,8 @@ if (isset ($_POST["add"])) {
 	<td><b>&nbsp;Description</b></td>
 </tr>
 <tr>
-	<td align=\"center\"><input type="text" name="date" size="10"></td>
-	<td align=\"center\"><textarea name="descr" cols="50" rows="4"></textarea></td>
+	<td align="center"><input type="text" name="date" size="10"></td>
+	<td align="center"><textarea name="descr" cols="50" rows="4"></textarea></td>
 </tr>
 </table><br>
 &nbsp;&nbsp;<input type="submit" name="add" value="-     Add     -">
@@ -138,10 +119,10 @@ if (isset ($_POST["add"])) {
 </tr>
 <?php
 // "edit" section
-$query="SELECT * FROM ab_news ORDER BY id DESC";
-$result=mysql_query($query, $dbid);
-$tbl_row=0;
-$counter=1;
+$query = "SELECT * FROM ab_news ORDER BY id DESC";
+$result = mysql_query($query, $dbid);
+$counter = 1;
+$even = true;
 
 $row_color1=' bgcolor=#ffffff';
 $row_color2=' bgcolor=#eeeeee';
@@ -153,14 +134,14 @@ while ($row = mysql_fetch_row($result))
 		$active_e=$row[3];
 
 // fill rows in different colours
-$tbl_row++;
-if (ceil($tbl_row/2)==($tbl_row/2)) { echo "<tr".$row_color1.">\n"; } else { echo "<tr".$row_color2.">\n";}
+if ($even) { echo "<tr".$row_color1.">\n"; } else { echo "<tr".$row_color2.">\n";}
+$even = !$even;
 
 printf("<td align=\"right\"><sub>%s</sub> %s</td>", $counter,$id_e);
 printf("<td align=\"left\">%s</td>\n", $date_e);
 printf("<td align=\"left\">%s<div align=\"right\"><a href=\"news_edit.php?id=%s\">EDIT</a></div></td>\n",htmlspecialchars($descr_e),$id_e);
 	if ($active_e==1)
-		// active 
+		// active
 		{
 		printf("<td align=\"center\" bgcolor=\"#86F086\"><a href=\"news_adm.php?deactivate=%s\" alt=\"Deactivate\">yes</a></td>\n", $id_e); 
 		}

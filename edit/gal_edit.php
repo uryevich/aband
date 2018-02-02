@@ -3,10 +3,10 @@
   session_start();
   if ($_SESSION["user_auth"] != true) { die ('<div align="center">access denied<br><a href="/">Log in</a></div>'); }
 
-// if something posted
-print_r ($_GET["gal"]);
+// is something posted?
+// print_r ($_GET["gal"]);
 if (isset ($_GET["gal"])) {
-   $id=$_GET["gal"];
+   $id = $_GET["gal"];
    }
    else { die ('<font color=#bb0000><b>No gallery id given</b></font>'); }
 
@@ -15,25 +15,19 @@ if (isset ($_GET["gal"])) {
 <head>
 <title>Edit gallery</title>
 <meta name=content charset=1251>
-<style type="text/css">
-<!--
-body,td { font-family: Verdana, Arial; font-size : 12px;}
-a:hover { color : #ff3300; }
--->
-</style>
+<link rel="stylesheet" type="text/css" href="edit_section.css">
 </head>
 <body bgcolor="#eeeeee">
 <?php
 require 'db_ini.php';
 
-
-$query="SELECT * FROM glrs WHERE dir=$id";
+$query = "SELECT * FROM glrs WHERE dir=$id";
 echo "<br><pre>".$query."</pre><br>";
-$result=mysql_query($query, $dbid);
+$result = mysql_query($query, $dbid);
 
 ?>
 <table bgcolor="#dddddd" cellpadding="1" cellspacing="1"><tr><td>
-<form method="post" action="<?php echo 'galadm.php'; ?>">
+<form method="post" action="galadm.php">
 <table bgcolor="#cccccc" border="0" cellpadding="0" cellspacing="2">
 <tr bgcolor="#ffffdd">
 <td><b>Directory</b></td>

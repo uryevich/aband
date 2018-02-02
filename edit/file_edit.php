@@ -1,12 +1,12 @@
 <?php
-  error_reporting(0);
+//  error_reporting(0);
   session_start();
   if ($_SESSION["user_auth"] != true) { die ('<div align="center">access denied<br><a href="/">Log in</a></div>'); }
 
-// if something posted
+// check is something posted?
 // print_r ($_GET["id"]);
 if (isset ($_GET["id"])) {
-   $id=$_GET["id"];
+   $id = $_GET["id"];
    }
    else { die ('<font color=#bb0000><b>No id given</b></font>'); }
 
@@ -15,25 +15,20 @@ if (isset ($_GET["id"])) {
 <head>
 <title>Edit File</title>
 <meta name=content charset=1251>
-<style type="text/css">
-<!--
-body,td { font-family: Verdana, Arial; font-size : 12px;}
-a:hover { color : #ff3300; }
--->
-</style>
+<link rel="stylesheet" type="text/css" href="edit_section.css">
 </head>
 <body bgcolor="#ffffff">
 <?php
 require 'db_ini.php';
 
 
-$query="SELECT files.dir, glrs.descr FROM files,glrs WHERE files.dir=glrs.dir AND id=".$id;
-$result_dir=mysql_query($query, $dbid);
-$row_dir=mysql_fetch_array($result_dir);
+$query = "SELECT files.dir, glrs.descr FROM files,glrs WHERE files.dir=glrs.dir AND id=".$id;
+$result_dir = mysql_query($query, $dbid);
+$row_dir = mysql_fetch_array($result_dir);
 
-$query="SELECT * FROM files WHERE id=".$id;
+$query = "SELECT * FROM files WHERE id=".$id;
 echo "\n<pre>".$query."</pre>\n";
-$result=mysql_query($query, $dbid);
+$result = mysql_query($query, $dbid);
 ?>
 
 
@@ -44,7 +39,7 @@ $result=mysql_query($query, $dbid);
 </td></tr>
 
 <tr><td>
-<form method="post" action="<?php echo 'fileadm.php'; ?>">
+<form method="post" action="fileadm.php">
 <table bgcolor="#cccccc" border="0" cellpadding="1" cellspacing="2">
 <tr bgcolor="#ffffdd">
 <td><b>&nbsp;ID</b></td>
@@ -54,8 +49,8 @@ $result=mysql_query($query, $dbid);
 <td><b>&nbsp;Pan-flag</b></td>
 </tr>
 <?php
-$x=0;
-$row=mysql_fetch_array($result);
+// $x = 0;
+$row = mysql_fetch_array($result);
 
 // echo "<br>-<br>";
 // print_r ($row);
@@ -84,10 +79,10 @@ printf("</tr>");
 </td>
 <td valign="top" align="center">
 <?php // Pictureee!!
-	$file_for_pic=$dire.'/s/'.$filee.'.jpg';
-	$file_info=@getimagesize($file);
-	$pic_size=$file_info[3];
-	echo '<img src="'.$dire.'/s/'.$filee.'.jpg" '.$pic_size.' border=0>
+	$file_location = '../'$dire.'/s/'.$filee.'.jpg';
+	$file_info = @getimagesize($file_location);
+	$pic_size = $file_info[3];
+	echo '<img src="'.$file_location.'" '.$pic_size.' border=0>
 ';
 ?>
 </td>

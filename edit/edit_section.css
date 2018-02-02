@@ -1,0 +1,11 @@
+body, td  {
+	font-family: Verdana, Arial; 
+	font-size : 12px;
+	background-color: #eeeeeel;
+}
+div.debug {
+	font-size : 10px;
+}
+a:hover {
+	color: #ff3300; 
+}

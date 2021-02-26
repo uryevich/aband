@@ -4,7 +4,7 @@ require 'db_ini.php';
 
 if (!$_GET["id"]) { $id=1; } else { $id=$_GET["id"]; }
 
-// проверка значения полученного id на "спам"
+// проверка значениЯ полученного id на "спам"
 if(!preg_match("/^[0-9]+$/", $id)) { $id=1; }
 
 $file_data=get_id($id);
@@ -61,13 +61,16 @@ if ($file_descr!="") {
 	$title=$dir_descr; 
 	}
 ?>
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
-<HTML>
-<HEAD>
- <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=windows-1251">
- <META NAME="Keywords" CONTENT="adventure, industrial, places, urban, abandoned, plant, base, zone, завод, зона, место, брошенные, заброшенные, недостроенный, база">
- <META NAME="Description" CONTENT=<?php echo "\".$dir_descr.", ".$file_descr.\"" ?>>
-<title><?php echo $title; ?>, Abandoned</title>
+<!DOCTYPE html>
+<html>
+<head>
+ <meta charset="UTF-8">
+ <meta name="viewport" content="width=device-width, initial-scale=1.0">
+ <meta name="keywords" content="adventure, industrial, places, urban, abandoned, plant, base, zone, завод, зона, место, брошенные, заброшенные, недостроенный, база">
+ <meta name="Description" content=
+ <?php echo "\"$dir_descr", "$file_descr\"" ?>
+>
+<title><?php echo strip_tags($title); ?>, Abandoned</title>
 <style type="text/css">
 body {
 background-color: #000017;
@@ -83,21 +86,11 @@ hr { border: 1px solid #747687; }
 .utext {  font-family: Arial; font-size: 8pt; color: #a4b6c7; font-style: italic; text-decoration: none}
 .link {  font-family: Verdana, Arial; font-size: 9pt; font-weight: bold}
 </style>
-<script type="text/javascript">
+<?php require ('gtag.js') ?>
+<?php require ('adSence.js') ?>
 
-  var _gaq = _gaq || [];
-  _gaq.push(['_setAccount', 'UA-15607830-1']);
-  _gaq.push(['_trackPageview']);
-
-  (function() {
-    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-  })();
-
-</script>
-</HEAD>
-<BODY alink="#ff2040" link="#00b0f0" text="#ffffff" vlink="#00b0d0">
+</head>
+<body alink="#ff2040" link="#00b0f0" text="#ffffff" vlink="#00b0d0">
 <!-- menu -->
 <?php require ('menu.php') ?>
 <!-- header end -->
@@ -115,7 +108,7 @@ hr { border: 1px solid #747687; }
 <!-- gallery navigation -->
 <?php
 if (isset ($pan)) { // если в галерее есть флаг панорамы
-	if ($file_pan==1) { // если текущая картинка панорама
+	if ($file_pan==1) { // если текущаЯ картинка панорама
 		echo '
    <tr>
    <td align="center" class="link" colspan="3">
@@ -139,7 +132,7 @@ if (isset ($pan)) { // если в галерее есть флаг панорамы
 				<tr>
 					<td class="link" align="right">
    <?php
-   // навигация "previous"
+   // навигациЯ "previous"
    if (($z!=0) and ($file_pan!=1)) {
       echo '
       <a href="pic.php?id='.$id_all[$z-1].'" title="Previous"> &lt;&lt; </a>
@@ -195,7 +188,7 @@ if ($file_pan==1) {
 <table align="center" cellpadding="0" cellspacing="0">
 <tr>
 <?php
-// вторая строчка навигации
+// втораЯ строчка навигации
 for ($d=$c+1; $d<=$x; $d++) {
 if ($c<9) { $space="&nbsp;"; } else { $space=""; }
 echo '<td class="link" align="center">';
@@ -226,7 +219,7 @@ echo '<td class="link" align="center">';
    </td>
    <td class="link" align="left">
    <?php
-   // навигация "next"
+   // навигациЯ "next"
 	if ($file_pan==1) {
 		echo '
 		<a href="pic.php?id='.$id_all[$z].'" title="Next"> &gt;&gt; </a>
@@ -245,7 +238,7 @@ echo '<td class="link" align="center">';
    ?>
    </td>
    </tr></table>
-<!--   // навигация галлереи end -->
+<!--   // навигациЯ галлереи end -->
 </td>
 <td bgcolor="#747687" width="1"><img src="sp.gif" width="1" height="1" border="0">
 </td>
@@ -257,15 +250,15 @@ echo '<td class="link" align="center">';
 </td>
 </tr>
 <tr>
-<td colspan=3 bgcolor="#747687"><img src="sp.gif" width="2" height="2" border="0"></td>
+<td style="height:2px;background-color:#747687" colspan=3><!-- <img src="sp.gif" width="2" height="2" border="0"> --> </td>
 <tr>
 <td align="center" class="link" rowspan="3">
 
 <?php
 
 	if ($file_pan==1) {
-		if ($z+1!=$x) { // если катинка не последняя, то вяжем к ней ссылку на следующую, 
-						// eсли последняя, то ссылка на thumb
+		if ($z+1!=$x) { // если катинка не последнЯЯ, то вЯжем к ней ссылку на следующую, 
+						// eсли последнЯЯ, то ссылка на thumb
 			echo '<a href="pic.php?id='.$id_all[$z].'">
 			<img src="'.$file.'.jpg" '.$file_size.' border="0" alt="'.$file_descr.'">
 			</a>';
@@ -276,8 +269,8 @@ echo '<td class="link" align="center">';
 		}
 	}
 	else {	
-		if ($z+1!=$x) { // если катинка не последняя, то вяжем к ней ссылку на следующую, 
-						// eсли последняя, то ссылка на thumb
+		if ($z+1!=$x) { // если катинка не последнЯЯ, то вЯжем к ней ссылку на следующую, 
+						// eсли последнЯЯ, то ссылка на thumb
 			echo '<a href="pic.php?id='.$id_all[$z+1].'">
 			<img src="'.$file.'.jpg" '.$file_size.' border="0" alt="'.$file_descr.'">
 			</a>';
@@ -333,17 +326,9 @@ src="http://pagead2.googlesyndication.com/pagead/show_ads.js">
 </table>
 <hr>
 <div align=right><?php include 'hotlog.php'; ?></div>
-<script type="text/javascript">
-var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
-document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
-</script>
-<script type="text/javascript">
-try {
-var pageTracker = _gat._getTracker("UA-15607830-1");
-pageTracker._trackPageview();
-} catch(err) {}</script>
-</BODY>
-</HTML>
+
+</body>
+</html>
 <?php
 function get_id ($idf)
 	{

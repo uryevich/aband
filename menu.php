@@ -4,16 +4,18 @@
 <?php
 if (isset($_ENV["REQUEST_URI"])) { $now_file = substr($_ENV["REQUEST_URI"], 1); }
 else { $now_file = substr($_SERVER["SCRIPT_NAME"], 1); }
-$tip=array (
+$menu_items=array (
 "about.php","Who?","- About -",
 "news.php","What's up?","- News -",
 "trips.php","Trips photos","- Trips -",
-"texts.php","Recomended Litrature","- Texts -",
+"texts.php","Some text to read","- Texts -",
 "linx.php","Other Industrial Related Sites","- Links -",
 "thanx.php","Thanks to peoples","- Thanks -",
 // "gbook.php","Have some words?","- G book -",
 // "forum.php","Discus the theme!","- Forum -"
 );
+
+// menu container without border and link begin
 $a1='
 <td>
    <table align="center" border="0" bgcolor="#747687"  cellpadding="2" cellspacing="0" width="100%">
@@ -23,6 +25,7 @@ $a1='
                 <tr>
                 <td align="center" class="link">
 ';
+// menu container without border and link end
 $a2='
                 </td>
                 </tr>
@@ -32,27 +35,29 @@ $a2='
    </table>
 </td>
 ';
+// menu container with border start
 $b1='
 <td>
    <table align="center" border="0" bgcolor="#747687"  cellpadding="2" cellspacing="0" width="100%">
         <tr>
         <td align="center" class="link">
         <font color="#dfdfdf">';
+// menu container with border end
 $b2='   </font>
         </td>
         </tr>
    </table>
 </td>
 ';
-$q=count ($tip);
+$q=count ($menu_items);
    for ($n=0; $n<=($q/3)-1; $n++) {
-      if ($now_file!=$tip[$n*3]) {
+      if ($now_file!=$menu_items[$n*3]) {
       echo $a1.'
-<A href="'.$tip[$n*3].'" title="'.$tip[$n*3+1].'">'.$tip[$n*3+2].'</A>
+<a href="'.$menu_items[$n*3].'" title="'.$menu_items[$n*3+1].'">'.$menu_items[$n*3+2].'</a>
 '.$a2;
       }
       else {
-      echo $b1.$tip[$n*3+2].$b2;
+      echo $b1.$menu_items[$n*3+2].$b2;
       }
    }
 ?>

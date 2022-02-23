@@ -1,4 +1,10 @@
 <?php
+if (!defined("LAND_PAGE")) { // check call from index, not self
+	header('Location: ./index.php'); 
+	exit; 
+}
+error_reporting(E_ALL); //debug
+// error_reporting(0);
 // require 'db_ini.php';
 
 // $query="SELECT * FROM glrs WHERE trip=0";
@@ -23,7 +29,7 @@
 <title>Abandoned - About</title>
  <meta charset="UTF-8">
  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="keywords" content="adventure, industrial, places, urban, abandoned, plant, base, zone, uryevich, завод, зона, место, брошенные, заброшенные, недостроенный, база">
+<meta name="keywords" content="adventure, industrial, places, urban, abandoned, plant, base, zone, uryevich, Р·Р°РІРѕРґ, Р·РѕРЅР°, РјРµСЃС‚Рѕ, Р±СЂРѕС€РµРЅРЅС‹Рµ, Р·Р°Р±СЂРѕС€РµРЅРЅС‹Рµ, РЅРµРґРѕСЃС‚СЂРѕРµРЅРЅС‹Р№, Р±Р°Р·Р°">
  <meta name="Description" content="Photo base of abandonned plants, unfinished buildings, industrial sites">
 <style type=text/css>
 body {
@@ -52,7 +58,7 @@ hr { border: 1px solid #747687; }
 <table border=0 cellpadding=0 cellspacing=5 width="100%">
 <tr>
 <td align=right valign=top>
-<img src="i.jpg" width=320 height=320 align=left alt="Uryevich himself"></td>
+<img src="i.jpg" width=320 height=320 align=left alt="Uryevich"></td>
 <td align=left class=text>
 Who I am?<br><br>
 &nbsp;&nbsp;&nbsp;I'm Uryevich. From my really happy childhood I developed a liking for any rusty metal constructions, cement blocks and for the silence of the wind which walks through this. I like them because there is an infinite life that stays there throughout the years...

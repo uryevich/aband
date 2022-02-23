@@ -1,11 +1,20 @@
 <?php
-// require 'stat/stat.php';
-require 'db_ini.php';
+if (!defined("LAND_PAGE")) { // check call from index, not self
+	header('Location: ./index.php'); 
+	exit; 
+}
+error_reporting(E_ALL); //debug
+// error_reporting(0);
 
-if (!$_GET["id"]) { $id=1; } else { $id=$_GET["id"]; }
+include 'db_ini.php';
 
-// проверка значения полученного id на "спам"
-if(!preg_match("/^[0-9]+$/", $id)) { $id=1; }
+// filter id
+if (!filter_input(INPUT_GET, "id", FILTER_VALIDATE_INT)) {
+    $id=1;
+} else {
+    $id=$_GET["id"];
+}
+
 
 $file_data=get_id($id);
 // if ($file_data == "") {
@@ -14,21 +23,20 @@ $file_data=get_id($id);
 //	}
 //	print_r ($file_data);
 $dir=$file_data["dir"];
-$file_name=$file_data["fil"];
-$file=$dir.'/'.$file_name;
+$file_name=$file_data['fil'];
+$file='./images/'.$dir.'/'.$file_name;
 $file_descr=$file_data["descr"];
 $file_descrm=$file_data["descrm"];
-@$file_size_temp=getimagesize($file.'.jpg');
+$file_size_temp=getimagesize($file.'.jpg');
 $file_pan=$file_data["pan"];
 $file_size=$file_size_temp[3];
 
-// есть ли панорама в галерее
-// если есть, то ставим еЄ в первый в списке id
-
+// if pan picture in gallery
+// put it first in id list
 
 $query="SELECT * FROM glrs WHERE dir=$dir";
-$result=mysql_query($query, $dbid) or die ("<font color=#bb0000><b>Can not select from database</b></font>");
-$dir_data=mysql_fetch_array($result);
+$result=mysqli_query($mysqli, $query) or die ("<font color=#bb0000><b>Can not select from database</b></font>");
+$dir_data=mysqli_fetch_array($result);
 $dir_descr=$dir_data["descr"];
 $dir_locat=$dir_data["locat"];
 $dir_date=$dir_data["dat"];
@@ -38,9 +46,9 @@ $dir_date=$dir_data["dat"];
  $x=0;
  $z=0;
  $query="SELECT pan,id FROM files WHERE dir='$dir' ORDER BY fil";
- $result=mysql_query($query, $dbid) or die ("
+ $result=mysqli_query($mysqli, $query) or die ("
 <font color=#bb0000><b>Can not select from database</b></font>");
-    while ($file_id_count=mysql_fetch_array($result)) {
+    while ($file_id_count=mysqli_fetch_array($result)) {
        if ($file_id_count["pan"]!=1) {
        $id_all[$x]=$file_id_count["id"];
          if ($id_all[$x]==$id) {
@@ -67,9 +75,7 @@ if ($file_descr!="") {
  <meta charset="UTF-8">
  <meta name="viewport" content="width=device-width, initial-scale=1.0">
  <meta name="keywords" content="adventure, industrial, places, urban, abandoned, plant, base, zone, завод, зона, место, брошенные, заброшенные, недостроенный, база">
- <meta name="Description" content=
- <?php echo "\"$dir_descr", "$file_descr\"" ?>
->
+ <meta name="Description" content=<?php echo "\"$dir_descr"," ", "$file_descr\"" ?>>
 <title><?php echo strip_tags($title); ?>, Abandoned</title>
 <style type="text/css">
 body {
@@ -102,7 +108,7 @@ hr { border: 1px solid #747687; }
 			<table align="center" cellspacing="5" cellpadding="0" width="70%">
 				<tr>
 					<td align="center" class="link" colspan="3">
-<a href=<?php echo '"thumb.php?gal='.$dir.'"' ?> class="link">Preview screen</a>
+<a href=<?php echo '"./index.php?do=thumb&dir='.$dir.'"' ?> class="link">Preview screen</a>
 					</td>
 				</tr>
 <!-- gallery navigation -->
@@ -135,7 +141,7 @@ if (isset ($pan)) { // если в галерее есть флаг панорамы
    // навигация "previous"
    if (($z!=0) and ($file_pan!=1)) {
       echo '
-      <a href="pic.php?id='.$id_all[$z-1].'" title="Previous"> &lt;&lt; </a>
+      <a href="./index.php?do=pic&id='.$id_all[$z-1].'" title="Previous"> &lt;&lt; </a>
       ';
       }
    else {
@@ -154,7 +160,7 @@ echo '<td class="link" align="center">';
 //  echo 'c='.$c.' x='.$x.'$file_pan='.$file_pan.'<br>'; 
 if ($file_pan==1) {
 	      echo '
-      <a href="pic.php?id='.$id_all[$c+1].'">'.$space.($c+1).$space.'</a>
+      <a href="./index.php?do=pic&id='.$id_all[$c+1].'">'.$space.($c+1).$space.'</a>
       </td>
       ';
 	}
@@ -170,7 +176,7 @@ if ($file_pan==1) {
 			}
 			else {
 			echo '
-			<a href="pic.php?id='.$id_all[$c].'">'.$space.($c+1).$space.'</a>
+			<a href="./index.php?do=pic&id='.$id_all[$c].'">'.$space.($c+1).$space.'</a>
 			</td>
 			';
 			}
@@ -201,7 +207,7 @@ echo '<td class="link" align="center">';
    }
    else {
    echo '
-   <a href="pic.php?id='.$id_all[$d-1].'">'.$space.($d).$space.'</a>
+   <a href="./index.php?do=pic&id='.$id_all[$d-1].'">'.$space.($d).$space.'</a>
    </td>
    ';
    }
@@ -222,13 +228,13 @@ echo '<td class="link" align="center">';
    // навигация "next"
 	if ($file_pan==1) {
 		echo '
-		<a href="pic.php?id='.$id_all[$z].'" title="Next"> &gt;&gt; </a>
+		<a href="./index.php?do=pic&id='.$id_all[$z].'" title="Next"> &gt;&gt; </a>
 		';
 		}
 	else {
 		if ($z+1!=$x) {
 			echo '
-			<a href="pic.php?id='.$id_all[$z+1].'" title="Next"> &gt;&gt; </a>
+			<a href="./index.php?do=pic&id='.$id_all[$z+1].'" title="Next"> &gt;&gt; </a>
 			';
 			}
 		else {
@@ -259,11 +265,11 @@ echo '<td class="link" align="center">';
 	if ($file_pan==1) {
 		if ($z+1!=$x) { // если катинка не последняя, то вяжем к ней ссылку на следующую, 
 						// eсли последняя, то ссылка на thumb
-			echo '<a href="pic.php?id='.$id_all[$z].'">
+			echo '<a href="./index.php?do=pic&id='.$id_all[$z].'">
 			<img src="'.$file.'.jpg" '.$file_size.' border="0" alt="'.$file_descr.'">
 			</a>';
 		} else {
-			echo '<a href="thumb.php?gal='.$dir.'">
+			echo '<a href="./index.php?do=thumb&dir='.$dir.'">
 			<img src="'.$file.'.jpg" '.$file_size.' border="0" alt="'.$file_descr.'">
 			</a>';
 		}
@@ -271,11 +277,11 @@ echo '<td class="link" align="center">';
 	else {	
 		if ($z+1!=$x) { // если катинка не последняя, то вяжем к ней ссылку на следующую, 
 						// eсли последняя, то ссылка на thumb
-			echo '<a href="pic.php?id='.$id_all[$z+1].'">
+			echo '<a href="./index.php?do=pic&id='.$id_all[$z+1].'">
 			<img src="'.$file.'.jpg" '.$file_size.' border="0" alt="'.$file_descr.'">
 			</a>';
 		} else {
-			echo '<a href="thumb.php?gal='.$dir.'">
+			echo '<a href="./index.php?do=thumb&dir='.$dir.'">
 			<img src="'.$file.'.jpg" '.$file_size.' border="0" alt="'.$file_descr.'">
 			</a>';
 		}
@@ -334,8 +340,8 @@ function get_id ($idf)
 	{
     require 'db_ini.php';
 	$query="SELECT * FROM files WHERE id=$idf";
-	$result=mysql_query($query, $dbid);
-	$file_data=mysql_fetch_array($result);
+	$result=mysqli_query($mysqli, $query);
+	$file_data=mysqli_fetch_array($result);
     return ($file_data);
 	}
 ?>

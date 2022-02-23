@@ -1,10 +1,19 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<?php
+if (!defined("LAND_PAGE")) { // check call from index, not self
+	header('Location: ./index.php'); 
+	exit; 
+}
+error_reporting(E_ALL); //debug
+// error_reporting(0);
+
+?>
+<!DOCTYPE html>
 <HTML>
 <HEAD>
 <title>Abandoned - Texts</title>
- <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=windows-1251">
- <META NAME="Keywords" CONTENT="industrial, places, urban, abandoned, plant, base, zone, завод, зона, место, брошенные, заброшенные, недостроенный, база">
- <META NAME="Description" CONTENT="Photo base of abandonned plants, unfinished buildings, industrial sites">
+ <meta charset="UTF-8">
+ <meta NAME="Keywords" CONTENT="industrial, places, urban, abandoned, plant, base, zone, Р·Р°РІРѕРґ, Р·РѕРЅР°, РјРµСЃС‚Рѕ, Р±СЂРѕС€РµРЅРЅС‹Рµ, Р·Р°Р±СЂРѕС€РµРЅРЅС‹Рµ, РЅРµРґРѕСЃС‚СЂРѕРµРЅРЅС‹Р№, Р±Р°Р·Р°">
+ <meta NAME="Description" CONTENT="Photo base of abandonned plants, unfinished buildings, industrial sites">
 <style type=text/css>
 body {
 background-color: #000017;

@@ -1,14 +1,20 @@
 <?php
-// require 'stat/stat.php';
-require 'db_ini.php';
+if (!defined("LAND_PAGE")) { // check call from index, not self
+	header('Location: ./index.php'); 
+	exit; 
+}
+error_reporting(E_ALL); //debug
+// error_reporting(0);
+
+include 'db_ini.php';
 ?>
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<!DOCTYPE html>
 <HTML>
 <HEAD>
 <title>Abandoned - Trips</title>
- <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=windows-1251">
- <META NAME="Keywords" CONTENT="industrial, places, urban, abandoned, plant, base, zone, завод, зона, место, брошенные, заброшенные, недостроенный, база">
- <META NAME="Description" CONTENT="Photo base of abandonned plants, unfinished buildings, industrial sites">
+ <meta charset="UTF-8">
+ <meta NAME="Keywords" CONTENT="industrial, places, urban, abandoned, plant, base, zone, Р·Р°РІРѕРґ, Р·РѕРЅР°, РјРµСЃС‚Рѕ, Р±СЂРѕС€РµРЅРЅС‹Рµ, Р·Р°Р±СЂРѕС€РµРЅРЅС‹Рµ, РЅРµРґРѕСЃС‚СЂРѕРµРЅРЅС‹Р№, Р±Р°Р·Р°">
+ <meta NAME="Description" CONTENT="Photo base of abandonned plants, unfinished buildings, industrial sites">
 <style type=text/css>
 body {
 background-color: #000017;
@@ -44,13 +50,13 @@ hr { border: 1px solid #747687; }
 </p><hr width="40%" align="right">
 <?php
 $query="SELECT dir,dat,descr FROM glrs WHERE trip=1 ORDER BY dir DESC";
-$result=mysql_query($query, $dbid);
+$result=mysqli_query($mysqli, $query);
 echo '<table border=0>';
-while (list($dir, $date, $descr) = mysql_fetch_row ($result)) {
+while (list($dir, $date, $descr) = mysqli_fetch_row ($result)) {
 
 	echo '
     <tr>
-    <td align=right class=text><a href="thumb.php?gal='.$dir.'">'.$date.'</a></td>
+    <td align=right class=text><a href="./index.php?do=thumb&dir='.$dir.'">'.$date.'</a></td>
     <td align=left class=text> - '.$descr.'</td>
     </tr>
     ';

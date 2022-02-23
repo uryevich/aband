@@ -1,28 +1,43 @@
-<?php //require 'stat/stat.php';?>
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
-<HTML>
-<HEAD>
 <?php
-require 'db_ini.php';
-// проверка значения полученного id на "спам"
-if (!$_GET["id"]) { $current_id=1; } else { $current_id=$_GET["id"]; }
-if(!preg_match("/^[0-9]+$/", $current_id)) { $current_id=1; }
+if (!defined("LAND_PAGE")) { // check call from index, not self
+	header('Location: ./index.php'); 
+	exit; 
+}
+error_reporting(E_ALL); //debug
+// error_reporting(0);
+
+include 'db_ini.php';
+
+// filter id
+if (!filter_input(INPUT_GET, "id", FILTER_VALIDATE_INT)) {
+    $current_id=1;
+} else {
+    $current_id=$_GET["id"];
+}
+
+/* 
 $query="SELECT * FROM files WHERE id=$current_id";
-$result=mysql_query($query, $dbid) or die ("
+$query="SELECT * FROM files WHERE dir='$dir' ORDER BY fil";
+
+$query="SELECT * FROM files WHERE dir=(SELECT dir FROM files WHERE id=$current_id) ORDER BY fil";
+ */
+
+$query="SELECT * FROM files WHERE id=$current_id";
+$result=mysqli_query($mysqli, $query) or die ("
 <font color=#bb0000><b>Can not select from database</b></font>");
-$file_data=mysql_fetch_array($result);
+$file_data=mysqli_fetch_array($result);
 $dir=$file_data[1];
 $file_name=$file_data[2];
-$file=$dir.'/'.$file_name;
+$file='./images/'.$dir.'/'.$file_name;
 $file_descr=$file_data[3];
 $file_descrm=$file_data[4];
 $file_size_temp=getimagesize($file.'.jpg');
 $file_size=$file_size_temp[3];
 
 $query="SELECT * FROM glrs WHERE dir=$dir";
-$result=mysql_query($query, $dbid) or die ("
+$result=mysqli_query($mysqli, $query) or die ("
 <font color=#bb0000><b>Can not select from database</b></font>");
-$dir_data=mysql_fetch_array($result);
+$dir_data=mysqli_fetch_array($result);
 $dir_descr=$dir_data[1];
 $dir_locat=$dir_data[2];
 $dir_date=$dir_data[3];
@@ -30,10 +45,10 @@ $dir_date=$dir_data[3];
  $x=0;
  $z=0;
  $query="SELECT * FROM files WHERE dir='$dir' ORDER BY fil";
- $result=mysql_query($query, $dbid) or die ("
+ $result=mysqli_query($mysqli, $query) or die ("
 <font color=#bb0000><b>Can not select from database</b></font>");
-    while ($file_id_count=mysql_fetch_array($result)) {
-       if ($file_id_count[5]!=1) {
+    while ($file_id_count=mysqli_fetch_array($result)) {
+       if ($file_id_count['pan']!=1) {
        $id_all[$x]=$file_id_count[0];
          if ($id_all[$x]==$current_id) { $z=$x; 
 		 }; //переменная $z определяет положение id текушего фото в массиве $id_all.
@@ -41,9 +56,13 @@ $dir_date=$dir_data[3];
        }
     }
     $x--;
+?>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+<HEAD>
+<?php
 echo '<title>Panorama of '.$dir_descr.' - Abandoned</title>';
 ?>
-
  <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=windows-1251">
  <META NAME="Keywords" CONTENT="adventure, industrial, places, urban, abandoned, plant, base, zone, завод, зона, место, брошенные, заброшенные, недостроенный, база">
  <META NAME="Description" CONTENT=<?php echo '"'.$dir_descr.' - '.$file_descr.'"' ?>>
@@ -69,20 +88,20 @@ hr { border: 1px solid #747687; }
 <!-- header end -->
 
 <!-- the picture part begining -->
-
+<br>
 <table align="center" border="0" width="100%" cellpadding="1" cellspacing="0">
 <tr>
-<td>
+<td width="30%">
    <table align="center" border="0" bgcolor="#747687"  cellpadding="2" cellspacing="0" height="100%" width="100%">
         <tr>
         <td>
-        <table align="center" border="0" background="strip.gif" cellpadding="2" cellspacing="0" height="100%" width="100%">
+        <table align="center" border="0" cellpadding="2" cellspacing="0" height="100%" width="100%">
                 <tr>
                 <td align="left" class="stext">
 <?php echo $dir_descr.' ('.$dir_locat.') <font class="utext">'.$dir_date.'</font>' ?>
                 </td>
                 </tr>
-                </table>
+        </table>
         </td>
         </tr>
    </table>
@@ -91,7 +110,7 @@ hr { border: 1px solid #747687; }
    <table align="center" bgcolor="#747687"  cellpadding="2" cellspacing="0" height="100%" width="100%">
         <tr>
         <td>
-        <table align="center" background="strip.gif" cellpadding="2" cellspacing="0" height="100%" width="100%">
+        <table align="center" cellpadding="2" cellspacing="0" height="100%" width="100%">
                 <tr>
                 <td align="center" class="link">
 
@@ -99,7 +118,7 @@ hr { border: 1px solid #747687; }
 <table align="center" cellpadding="0" cellspacing="0">
 <tr>
 <td class="link">
-<a href=<?php echo '"thumb.php?gal='.$dir.'"' ?> class="link">Preview screen</a>&nbsp;&nbsp;
+<a href=<?php echo '"./index.php?do=thumb&dir='.$dir.'"' ?> class="link">Preview screen</a>&nbsp;&nbsp;
 </td>
 <td class="link">
 <font color="#747687">|</font>
@@ -108,7 +127,7 @@ hr { border: 1px solid #747687; }
 for ($d=0; $d<=$x; $d++) {
 echo '<td class="link" align="center">';
    echo '
-   <a href="pic.php?id='.$id_all[$d].'">'.($d+1).'</a>
+   <a href="./index.php?do=pic&id='.$id_all[$d].'">'.($d+1).'</a>
    </td>
    ';
    echo '
@@ -119,7 +138,7 @@ echo '<td class="link" align="center">';
 }
    if (isset($id_all[0])) {
    echo '<td class="link">
-<a href="pic.php?id='.$id_all[0].'">&nbsp;&nbsp;&gt;&gt; </a>
+<a href="./index.php?do=pic&id='.$id_all[0].'">&nbsp;&nbsp;&gt;&gt; </a>
 </td>
    ';
    }
@@ -142,13 +161,13 @@ echo '<td class="link" align="center">';
 <?php
 if (isset($id_all[0])) {
 	echo '
-<a href="pic.php?id='.$id_all[0].'">
+<div align="center"><a href="./index.php?do=pic&id='.$id_all[0].'">
 <img src="'.$file.'.jpg" '.$file_size.' border="0">
-</a>
+</a></div>
 	'; } 
 	else {
 	echo '
-<img src="'.$file.'.jpg" '.$file_size.' border="0">
+<div align="center"><img src="'.$file.'.jpg" '.$file_size.' border="0"></div>
 	'; }
 require ('copyright.php'); ?>
 <hr>

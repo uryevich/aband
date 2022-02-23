@@ -1,5 +1,5 @@
 <?php
- error_reporting(0);
+ error_reporting(E_ALL);
 include 'db_ini.php';
 $d=0;
 $query="SELECT * FROM glrs WHERE trip=0 ORDER BY dir";;

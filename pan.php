@@ -15,7 +15,7 @@ if (!filter_input(INPUT_GET, "id", FILTER_VALIDATE_INT)) {
     $current_id=$_GET["id"];
 }
 
-/* 
+/* // need to compact code to one query
 $query="SELECT * FROM files WHERE id=$current_id";
 $query="SELECT * FROM files WHERE dir='$dir' ORDER BY fil";
 
@@ -50,22 +50,25 @@ $dir_date=$dir_data[3];
     while ($file_id_count=mysqli_fetch_array($result)) {
        if ($file_id_count['pan']!=1) {
        $id_all[$x]=$file_id_count[0];
-         if ($id_all[$x]==$current_id) { $z=$x; 
-		 }; //переменная $z определяет положение id текушего фото в массиве $id_all.
+         if ($id_all[$x]==$current_id) { 
+			$z=$x; 
+			}; // var $z used to mark current photo in array $id_all
        $x++;
        }
     }
-    $x--;
+$x--;
+mysqli_close($mysqli);	
 ?>
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<!DOCTYPE html>
 <HTML>
 <HEAD>
 <?php
 echo '<title>Panorama of '.$dir_descr.' - Abandoned</title>';
 ?>
- <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=windows-1251">
- <META NAME="Keywords" CONTENT="adventure, industrial, places, urban, abandoned, plant, base, zone, завод, зона, место, брошенные, заброшенные, недостроенный, база">
- <META NAME="Description" CONTENT=<?php echo '"'.$dir_descr.' - '.$file_descr.'"' ?>>
+ <meta charset="UTF-8">
+ <meta name="viewport" content="width=device-width, initial-scale=1.0">
+ <meta name="Keywords" content="adventure, industrial, places, urban, abandoned, plant, base, zone, завод, зона, место, брошенные, заброшенные, недостроенный, база">
+ <meta name="Description" content=<?php echo "\"$dir_descr"," ", "$file_descr\"" ?>>
 <style type=text/css>
 body {
 background-color: #000017;

@@ -56,6 +56,7 @@ $dir_date=$dir_data['dat'];
        	}
     }
 $s_dbrows=$x;
+mysqli_close($mysqli);
 
 echo '<title>Abandoned - '.$dir_descr.'</title>';
 ?>

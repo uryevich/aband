@@ -1,0 +1,139 @@
+body {
+	font-family: Verdana, Arial, sans-serif; 
+	font-size: 100%;
+	background-color: #eeeeee;
+	}
+p {
+	font-family: Verdana, Arial, sans-serif; 
+	font-size: 0.9em;
+	background-color: #ccccee;
+	}
+	
+.normal {
+	font-size: 0.8em;
+	color: #000000;
+}
+.tb_header {
+	font-size: 0.9em;
+	background-color: #ffffdd;
+	font-weight: bold;
+	text-align: center;
+}
+.notice {
+	font-size: 0.8em;
+	color: #005500;
+	background-color: #ffffdd;
+}
+.warning {
+	font-size: 0.8em;
+	color: #550000;
+	background-color: #ffdddd;
+}
+.info {
+	font-size: 0.8em;
+	color: #000055;
+	background-color: #ddddff;
+}
+
+a:hover {
+	color: #550000;
+	background-color: #ffffff;
+	}
+a:link, a:visited {
+	text-decoration: none;
+	color: #3333cc;
+	padding: 2px 6px;
+	display: inline-block;
+	border: 1px solid #000000;
+	text-align: center
+}
+
+a:active {
+	background-color: #00ff00;
+	color: #ff3300;
+}
+
+table, td {
+	padding: 2px;
+	margin: 6px;
+	/* font-size: 0.8em; */
+	border-collapse: collapse;
+	border: 1px solid #888888;
+	
+	/* background-color: #eeeeee; */
+}
+
+td {
+	font-size: 0.9em;
+}
+
+tr.noact	{
+	background-color: #ffeeee;
+}
+
+tr:nth-child(even) { background-color: #e1e1e1; }
+
+td.act	{
+	background-color: #ddffdd;
+	text-align: center;
+}
+td.noact	{
+	background-color: #ffdddd;
+	text-align: center;
+}
+
+
+ul.menu {
+  list-style-type: none;
+  margin: 5;
+  padding: 0;
+  overflow: hidden;
+  background-color: #eeeeee;
+  border: 10px;
+}
+
+li.menu {
+  float: left;
+}
+
+li.menu a.menu {
+  display: block;
+  color: #3333cc;
+  text-align: center;
+  padding: 8px 10px;
+  text-decoration: none;
+  border: 5px;
+  font-size: 0.8em;
+}
+
+li.menu a:hover:not(.active) {
+  background-color: #ffffff;
+  border: 1px;
+}
+
+
+/* //// */
+
+/* body { font-family: Verdana, Arial; font-size : 12px; background-color : #eeeeee; } */
+/* td { font-family: Verdana, Arial; font-size : 12px; } */
+/* a:hover { color : #ff3300; } */
+
+/* body,td { font-family: Verdana, Arial; font-size : 12px;} */
+/* a:hover { color : #ff3300; } */
+
+/* th { */
+  /* background-color: #4CAF50; */
+  /* color: white; */
+/* } */
+	
+/* 
+warning color=#bb0000 
+info font size=\"-1\" color=#005500 
+table border="0" cellpadding="2" cellspasing="1" bgcolor="#ffffdd"
+first col - tr bgcolor="#ffffdd"
+$row_color1=' bgcolor=#ffffff';
+$row_color2=' bgcolor=#eeeeee';
+
+tr:nth-child(even) {background-color: #ffffff;}
+
+*/

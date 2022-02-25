@@ -4,24 +4,6 @@ if (!defined("LAND_PAGE")) { // check call from index, not self
 	exit; 
 }
 error_reporting(E_ALL); //debug
-// error_reporting(0);
-// require 'db_ini.php';
-
-// $query="SELECT * FROM glrs WHERE trip=0";
-// $result=mysql_query($query, $dbid);
-// $objects=mysql_num_rows($result);
-
-// $query="SELECT * FROM glrs WHERE trip=1";
-// $result=mysql_query($query, $dbid);
-// $trips=mysql_num_rows($result);
-
-// $query="SELECT * FROM glrs";
-// $result=mysql_query($query, $dbid);
-// $objects=mysql_num_rows($result);
-
-// $query="SELECT * FROM files";
-// $result=mysql_query($query, $dbid);
-// $photos=mysql_num_rows($result);
 ?>
 <!DOCTYPE html>
 <html>

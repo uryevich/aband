@@ -15,13 +15,7 @@ if (!filter_input(INPUT_GET, "id", FILTER_VALIDATE_INT)) {
     $id=$_GET["id"];
 }
 
-
 $file_data=get_id($id);
-// if ($file_data == "") {
-//	$id=1;
-//	$file_data=get_id($id);
-//	}
-//	print_r ($file_data);
 $dir=$file_data["dir"];
 $file_name=$file_data['fil'];
 $file='./images/'.$dir.'/'.$file_name;
@@ -42,7 +36,6 @@ $dir_locat=$dir_data["locat"];
 $dir_date=$dir_data["dat"];
 
 
-
  $x=0;
  $z=0;
  $query="SELECT pan,id FROM files WHERE dir='$dir' ORDER BY fil";
@@ -60,7 +53,7 @@ $dir_date=$dir_data["dat"];
        $pan=$file_id_count["id"];
        }
     }
-//    $x--;
+mysqli_close($mysqli);
 // title
 if ($file_descr!="") {
 	$title=$file_descr.", ".$dir_descr; 
@@ -113,8 +106,8 @@ hr { border: 1px solid #747687; }
 				</tr>
 <!-- gallery navigation -->
 <?php
-if (isset ($pan)) { // если в галерее есть флаг панорамы
-	if ($file_pan==1) { // если текущая картинка панорама
+if (isset ($pan)) { // if there is pan flag in gallery
+	if ($file_pan==1) { // if current file is pan
 		echo '
    <tr>
    <td align="center" class="link" colspan="3">
@@ -153,11 +146,10 @@ if (isset ($pan)) { // если в галерее есть флаг панорамы
 <table align="center" cellpadding="0" cellspacing="0">
 <tr>
 <?php
-// ссылки на все файлы в галерее
+// links to all files in gallery
 for ($c=0; $c<(ceil ($x/2)); $c++) {
 if ($c<9) { $space="&nbsp;"; } else { $space=""; }
 echo '<td class="link" align="center">';
-//  echo 'c='.$c.' x='.$x.'$file_pan='.$file_pan.'<br>'; 
 if ($file_pan==1) {
 	      echo '
       <a href="./index.php?do=pic&id='.$id_all[$c+1].'">'.$space.($c+1).$space.'</a>
@@ -194,7 +186,7 @@ if ($file_pan==1) {
 <table align="center" cellpadding="0" cellspacing="0">
 <tr>
 <?php
-// вторая строчка навигации
+// second navigation row
 for ($d=$c+1; $d<=$x; $d++) {
 if ($c<9) { $space="&nbsp;"; } else { $space=""; }
 echo '<td class="link" align="center">';
@@ -225,7 +217,7 @@ echo '<td class="link" align="center">';
    </td>
    <td class="link" align="left">
    <?php
-   // навигация "next"
+   // "next" navigation link
 	if ($file_pan==1) {
 		echo '
 		<a href="./index.php?do=pic&id='.$id_all[$z].'" title="Next"> &gt;&gt; </a>
@@ -244,7 +236,7 @@ echo '<td class="link" align="center">';
    ?>
    </td>
    </tr></table>
-<!--   // навигация галлереи end -->
+<!--   // gallery navigation end -->
 </td>
 <td bgcolor="#747687" width="1"><img src="sp.gif" width="1" height="1" border="0">
 </td>
@@ -263,8 +255,8 @@ echo '<td class="link" align="center">';
 <?php
 
 	if ($file_pan==1) {
-		if ($z+1!=$x) { // если катинка не последняя, то вяжем к ней ссылку на следующую, 
-						// eсли последняя, то ссылка на thumb
+		if ($z+1!=$x) { // if current file not last, bind link to next file 
+						// if current file is last, then link to thumb page
 			echo '<a href="./index.php?do=pic&id='.$id_all[$z].'">
 			<img src="'.$file.'.jpg" '.$file_size.' border="0" alt="'.$file_descr.'">
 			</a>';
@@ -275,8 +267,8 @@ echo '<td class="link" align="center">';
 		}
 	}
 	else {	
-		if ($z+1!=$x) { // если катинка не последняя, то вяжем к ней ссылку на следующую, 
-						// eсли последняя, то ссылка на thumb
+		if ($z+1!=$x) { // if current file not last, bind link to next file 
+						// if current file is last, then link to thumb page
 			echo '<a href="./index.php?do=pic&id='.$id_all[$z+1].'">
 			<img src="'.$file.'.jpg" '.$file_size.' border="0" alt="'.$file_descr.'">
 			</a>';
@@ -286,10 +278,6 @@ echo '<td class="link" align="center">';
 			</a>';
 		}
 	}
-// echo '
-// <p align="center">
-// <a href="#top" class="link" title="Top">&nbsp;_ <u>^</u> _&nbsp;</a></p>
-// ';
 ?>
 </td>
 <td rowspan="3" bgcolor="#747687">

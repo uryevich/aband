@@ -201,7 +201,7 @@ foreach ($galleries as $row_counter => $v){
     echo "<td class=\"normal\">".$v['locat']."</td>\n";
     echo "<td class=\"normal\">".$v['dat']."</td>\n";
     echo "<td class=\"normal\">".$v['trip']."</td>\n";
-    echo "<td class=\"normal\"><span class=\"warning\"><a href=\"./index.php?do=galedit&dir_id=".$v['dir']."\">Edit</a></span> <span class=\"notice\"><a href=\"../thumb.php?gal=".$v['dir']." \" target=\"_new\">View</a></span></td>\n";
+    echo "<td class=\"normal\"><span class=\"warning\"><a href=\"./index.php?do=galedit&dir_id=".$v['dir']."\">Edit</a></span> <span class=\"notice\"><a href=\"../index.php?do=thumb&dir=".$v['dir']." \" target=\"_new\">View</a></span></td>\n";
     echo "<td><a class=\"normal\" href=\"./index.php?do=gal&delete=".$v['dir']."\" alt=\"Delete\">x</a></td>\n</tr>\n";
 }
 

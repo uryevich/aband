@@ -65,7 +65,23 @@ echo " <input type=\"text\" name=\"dir_id\" value=\"$dir_e\" size=\"10\"></td>\n
 echo "<td><input type=\"text\" name=\"galname\" value=\"$descr_e\" size=\"45\"></td>\n";
 echo "<td><input type=\"text\" name=\"locat\" value=\"$locat_e\" size=\"25\"></td>\n";
 echo "<td><input type=\"text\" name=\"date\" value=\"$date_e\" size=\"10\"></td>\n";
-echo "<td align=\"center\"><input type=\"text\" name=\"trip\" value=\"$trip_e\" size=\"2\"></td>\n";
+echo "<td align=\"center\">";
+// echo "<input type=\"text\" name=\"trip\" value=\"$trip_e\" size=\"2\">\n";
+echo "
+<select id=\"dropdown\" name=\"trip\">";
+for ($val=0; $val<=2; $val++) {
+	if ($val==$trip_e) {
+		echo "<option value=\"$val\" selected>$val</option>";
+	} else {
+		echo "<option value=\"$val\">$val</option>";
+	}
+}
+echo "<!--	<option value=\"0\">0</option>
+	<option value=\"1\">1</option>
+	<option value=\"2\" selected>2</option> -->
+	</select>
+	</td>
+";
 echo "</tr></table>";
 
 ?>

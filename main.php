@@ -80,6 +80,7 @@ require ('adSence.js');
 <?php
 // show epigraph corresponding to visitor language - deprecated
 echo $epigraph;
+
 ?>
 <br>
 <?php require ('menu.php');?>
@@ -95,22 +96,20 @@ echo $epigraph;
 <col width="2">
 <col width="230">
 </colgroup>
-<!--
-<tr bgcolor="#747687" height="2">
-<td colspan=7><img src="sp.gif" width="1" height="2" border="0"></td> -->
+
 <?php
-$rows=ceil(($gal_counter-1)/4); //определяем количество строк в таблице обычных галерей
+$rows=ceil(($gal_counter)/4); // set number of rows in galleries table section
 echo "
 	<tr>";
-for ($r=0; $r<$rows; $r++){ //цикл для строк таблицы галерей
+for ($r=0; $r<$rows; $r++){ // loop for rows in galleries table section
 	if ($r!=0) { // separator but not above first row
 	   echo "<tr bgcolor=\"#747687\"><td colspan=\"7\" height=\"2\"></td></tr>\n";
    }
-	for ($c=0; $c<=3; $c++){ //цикл для столбцов таблицы
-		$cell=$r*4+$c; //определяем порядковый номер ячейки
+	for ($c=0; $c<=3; $c++){ // loop for columns in galleries table section
+		$cell=$r*4+$c; // set cell number
 		echo '
 	<td align="center" valign="top" class="stext">';
-		if ($cell<($gal_counter-1)) {
+		if ($cell<($gal_counter)) {
 			$dir=($gallery[$cell]['dir']);
 			$descr=($gallery[$cell]['descr']);
 			$locat=$gallery[$cell]['locat'];
@@ -118,22 +117,7 @@ for ($r=0; $r<$rows; $r++){ //цикл для строк таблицы гале
 			$file=$dir.'.jpg';
 			$file_info=@getimagesize('./images/thumb/'.$dir.'.jpg');
 			$file_info[3] = isset($file_info[3]) ? $file_info[3] : 'width="150" height="150"';
-			$pic_size=$file_info[3]; //это размер картинки в формате 'leight=xx widh=yy'
-/*
-		if (isset($directories[$x])) { //если ещё есть запись в базе
-   
-  // deprecated, old
-   $query="SELECT * FROM glrs WHERE dir=$directories[$x]";
-   $result=mysql_query($query, $dbid) or die ("<font color=#ff3333><b>Something wrong...</b></font>");
-   $particular_row=mysql_fetch_array($result);
-   $dir=$particular_row[0];
-   $descr=$particular_row[1];
-   $locat=$particular_row[2];
-   $date=$particular_row[3];
-   $file=$dir.'.jpg';
-   $file_info=@getimagesize('thumb/'.$dir.'.jpg');
-   $pic_size=$file_info[3]; //это размер картинки в формате 'leight=xx widh=yy'
-    */
+			$pic_size=$file_info[3]; // image size in format 'leight=xx widh=yy'
    
 	echo '
 		<table border="0" cellpadding="0" cellspacing="5">
@@ -159,7 +143,7 @@ for ($r=0; $r<$rows; $r++){ //цикл для строк таблицы гале
 			echo '<td bgcolor="#747687"><img src="sp.gif" width="1" height="1" border="0">';
 			}
 			else { 
-			echo '<td></td>'; // ячейка разделителя
+			echo '<td></td>'; // cell for separator
 			}
 		}
 	echo "
@@ -169,30 +153,10 @@ for ($r=0; $r<$rows; $r++){ //цикл для строк таблицы гале
 }
 echo "
 </table>\n";
-/*
- echo '<tr bgcolor="#747687" height="1">
- <td><img src="sp.gif" width="2" height="2" border="0"></td>
- <td><img src="sp.gif" width="2" height="2" border="0"></td>
- <td><img src="sp.gif" width="2" height="2" border="0"></td>
- <td><img src="sp.gif" width="2" height="2" border="0"></td>
- <td><img src="sp.gif" width="2" height="2" border="0"></td>
- <td><img src="sp.gif" width="2" height="2" border="0"></td>
- <td><img src="sp.gif" width="2" height="2" border="0"></td>
- </tr>';
-echo '</table>
-';
-*/
-
 
 // <!-- trips section -->
 
-/* // deprecated
-$query="SELECT * FROM glrs WHERE trip=1 ORDER BY dir";;
-$result=mysql_query($query, $dbid);
-$t_dbrows=mysql_num_rows($result);
- */
-
-echo '<!-- <hr width="90%" align="center"> --><br>
+echo '<br>
 <table align="center" border=0 cellPadding=0 cellSpacing=5 width="70%">
   <tr>
     <td align="left" class="text" colspan=3>Trips:</td>
@@ -202,10 +166,6 @@ echo '<!-- <hr width="90%" align="center"> --><br>
   </tr>
 ';
 	for ($r=0; $r<$trip_counter; $r++) {
-	// $particular_row=mysql_fetch_array($result); // deprecated
-	// 		$trip_counter++;
-		//	$gallery_trip[$trip_counter]=$row;
-      // if ($particular_row) { //если ещё есть запись в базе
 		$dir=$gallery_trip[$r]['dir'];
 		$descr=$gallery_trip[$r]['descr'];
 		$date=$gallery_trip[$r]['dat'];
@@ -221,7 +181,6 @@ echo '<!-- <hr width="90%" align="center"> --><br>
 	<td align="left" class="stext" width="80%">'.$descr.'</td>
  </tr>';
 	}
-// } //если ещё есть запись в базе END
 ?>
 </table>
 <br><br>

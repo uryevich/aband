@@ -10,7 +10,7 @@ $menu_items=array (
 "./index.php?do=trips","Trips photos","- Trips -",
 "./index.php?do=texts","Some text to read","- Texts -",
 "./index.php?do=links","Other Industrial Related Sites","- Links -",
-"./index.php?do=thanx","Thanks to peoples","- Thanks -",
+"./index.php?do=thanks","Thanks to peoples","- Thanks -",
 // "gbook.php","Have some words?","- G book -",
 // "forum.php","Discus the theme!","- Forum -"
 );

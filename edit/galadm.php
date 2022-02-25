@@ -1,40 +1,17 @@
 <?php
-  error_reporting(0);
-  session_start();
-  if ($_SESSION["user_auth"] != true) { die ('<div align="center">access denied<br><a href="/">Log in</a></div>'); }
+error_reporting(E_ALL); //debug
+if(!defined("IS_ADMIN")) die; // check call from index, not self
 ?>
 <html>
 <head>
 <title>Admin galleryes</title>
-<meta name=content charset=1251>
-<style type="text/css">
-<!--
-body,td { font-family: Verdana, Arial; font-size : 12px;}
-a:hover { color : #ff3300; }
--->
-</style>
+<meta charset="UTF-8"/>
+<link rel="stylesheet" href="./admin.css" type="text/css"/>
 </head>
-<body bgcolor="#eeeeee">
-<p>
-<a href="galadm.php">Reload</a> |
-<a href="index.php" target="_new">Index</a> |
-<a href="link_adm.php">Links Admin</a> |
-<a href="baseadm.php">DB Admin</a> |
-<a href="log.php?logout=1">Logout</a>
-
-<p>This:
-<a href="galadm.php">Reload</a> |
-<a href="index.php" target="_new">Index</a><br>
-Menu:
-<a href="fileadm.php">File admin</a> |
-<a href="links_adm.php">Links admin</a> |
-<a href="news_adm.php">News admin</a> |
-<a href="baseadm.php">DB admin</a> |
-<a href="log.php?logout=1">Logout</a>
-</p>
-</p>
+<body>
 <?php
-require 'db_ini.php';
+include "menu.php";
+require "../db_ini_.php"; // debug db file
 
 // 4 cases: 
 // 1. edit
@@ -42,137 +19,193 @@ require 'db_ini.php';
 // 3. first load
 // 4. add
 
-// $add_lines_counter=1;
-
 // Edit section
-if (isset ($_POST["edit"])) {
-
-	$dire=$_POST["dire"];
-	$dir=$_POST["dir"];
-// $x=$_POST["x"];
-	$descr=$_POST["descr"];
-	$locat=$_POST["locat"];
-	$date=$_POST["date"];
-	$trip=$_POST["trip"];
-//	$del=$_POST["del"];
-
-	$query = "UPDATE glrs SET descr='".addslashes($descr)."', locat='".addslashes($locat)."', dat='$date', trip='$trip' WHERE dir='$dir'";
-    $result = mysql_query($query, $dbid) or die ("<font color=#bb0000><b>Can't update!</b></font>");
-      
+// If received 'edit' flag prepare and update DB
+if (isset ($_POST['edit'])) {
+    $dir_id=$_POST['dir_id'];
+    $galname=$_POST['galname'];
+    $locat=$_POST['locat'];
+    $date=$_POST['date'];
+    $trip=$_POST['trip'];
     
-echo "<b><font size=\"-2\" color=#005500>Changes has been saved</font></b><br>
-<pre>".$query."</pre><br>";
-	}
+    try {
+        $dbh = new PDO('mysql:host='.$mysql_h.';dbname='.$mysql_db, $mysql_u, $mysql_p);
+        $dbh->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        $query = "UPDATE glrs SET descr = :galname , locat = :locat , dat = :date , trip = :trip WHERE dir = :dir_id";
+        $params = [':galname' => $galname,':locat' => $locat,':date' => $date,':trip' => $trip,':dir_id' => $dir_id];
+        $stmt = $dbh->prepare($query);
+        $stmt->execute($params);
+        $stmt = null;
+        $dbh = null;
+        echo "<div class=\"notice\">Update successful</div><br/>\n"; // notice
+        } catch (PDOException $e) {
+        print "Error!: " . $e->getMessage() . "<br/>";
+        die();
+    }      
+    echo "<div class=\"notice\">Changes has been saved</div><br>\n"; // notice
+}
    
    
 // delete section
+// If received 'delete' flag prepare and delete in DB
 if (isset($_GET["delete"])) {
-	$delete_id=$_GET["delete"];
-        $query="DELETE FROM glrs WHERE dir='$delete_id'";
-	$result=mysql_query($query, $dbid); // or die("<font color=#bb0000><b>Can't delete row!</b></font>");
-        echo "<b><font size=\"-2\" color=#555500>Gallery ".$delete_id." has been deleted&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</font></b><br>\n";
-	}
-
+    $delete_id=$_GET["delete"];
+    
+    try {
+        $dbh = new PDO('mysql:host='.$mysql_h.';dbname='.$mysql_db, $mysql_u, $mysql_p);
+        $dbh->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        
+// show what will be deleted
+        $query = "SELECT * FROM glrs WHERE dir = ?";
+        $stmt = $dbh->prepare($query);
+        $stmt->execute([$delete_id]);
+        $row = $stmt->fetch(PDO::FETCH_LAZY);
+        echo '<div class="warning">Deleted!
+        <table>
+        <tr>
+        <td>Dir:</td>
+        <td>'.$row[0].'</td>
+        </tr>
+        <tr>
+        <td>Description:</td>
+        <td>'.$row[1].'</td>
+        </tr>
+        <tr>
+        <td>Location:</td>
+        <td>'.$row[2].'</td>
+        </tr>
+        <tr>
+        <td>Date:</td>
+        <td>'.$row[3].'</td>
+        </tr>
+        <tr>
+        <td>Trip flag:</td>
+        <td>'.$row[4].'</td>
+        </tr>
+        </table>
+        </div>
+        ';
+// delete
+        $query = "DELETE FROM glrs WHERE dir = ?";
+        $stmt = $dbh->prepare($query);
+        $stmt->execute([$delete_id]);
+        $stmt = null;
+        $dbh = null;
+        echo "<div class=\"notice\">Gallery ".$delete_id." has been deleted</div><br/>\n"; // notice
+        } catch (PDOException $e) {
+        print "Error!: " . $e->getMessage() . "<br/>";
+        die();
+        }
+    }
 
 // Add section
-if (isset ($_POST["add"])) {
-   $dir=$_POST["dir"];
-   $descr=$_POST["descr"];
-   $locat=$_POST["locat"];
-   $date=$_POST["date"];
-   $trip=$_POST["trip"];
-    if (isset ($dir)) {
-    $query="SELECT * FROM glrs WHERE dir=$dir";
-    $result=mysql_query($query, $dbid) or die("<font color=#bb0000><b>Can't read!</b></font>");
-    $row=mysql_fetch_array($result);
-    $dir_a=$row["dir"];
-    // echo "dir_a".$dir_a;
-    $descr_a=$row["descr"];
-    // echo "descr_a".$descr_a;
-        if ($dir==$dir_a) {
-        echo "<font color=#bb0000> Directory coinsidence at row <b>".$dir_a."</b> with description <b>".$descr_a."</b></font><br />";
+// If received 'add' flag prepare and insert in DB
+if (isset ($_POST['add']) && !empty ($_POST['dir_id'])) {
+   $dir_id=$_POST['dir_id'];
+   $galname=$_POST['galname'];
+   $locat=$_POST['locat'];
+   $date=$_POST['date'];
+   $trip=$_POST['trip'];
+   
+       try {
+        $dbh = new PDO('mysql:host='.$mysql_h.';dbname='.$mysql_db, $mysql_u, $mysql_p);
+        $dbh->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        
+        $query = "SELECT * FROM glrs WHERE dir = ?";
+        $stmt = $dbh->prepare($query);
+        $stmt->execute([$dir_id]);
+        $row = $stmt->fetch(PDO::FETCH_LAZY);
+        
+        $dir_in_db = $row['dir'];
+        $descr_in_db = $row['descr'];
+        echo "<br/>In db:$dir_in_db, $descr_in_db<br/>";
+		
+		// check if given dir_id already in DB
+        if ($dir_id == $dir_in_db) { 
+            echo "<div class=\"warning\">Directory coinsidence at row".$dir_in_db." with description ".$descr_in_db."</div><br />\n";
+            }
+            else {
+            $query = "INSERT INTO glrs (dir, descr, locat, dat, trip) VALUES (:dir,:descr,:locat,:date,:trip)";
+            $params = [':dir' => $dir_id,':descr' => $galname,':locat' => $locat, ':date' => $date, ':trip' => $trip];
+            $stmt = $dbh->prepare($query);
+            $stmt->execute($params);
+            echo "<div class=\"notice\">Directory ".$dir." (".$descr.") has been added</div>"; // notice
+            }
+            
+        $stmt = null;
+        $dbh = null;
+        } catch (PDOException $e) {
+        print "Error!: " . $e->getMessage() . "<br/>";
+        die();
         }
-        else {
-        $query="INSERT INTO glrs (dir,descr,locat,dat,trip) VALUES ('$dir','".addslashes($descr)."','$locat','$date','$trip')";
-        $result=mysql_query($query, $dbid) or die ("<font color=#bb0000><b>can't insert new parameters</b></font>");
-        echo "<b><font size=\"-2\" color=#005500>Directory ".$dir." (".$descr.") has been added</font></b>
-<br />
-<pre>".$query."</pre><br />
-";
-        }
-    } //end of check of empty 'dir' param
-} // end of "add" cycle
+} // end of "add" condition
 
 // form:
 ?>
-<!-- // "add" section -->
-<table bgcolor="#eeeeee" border="0" cellpadding="0"  cellspacing="1">
-<tr><td>
-<form method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>">
-<table bgcolor="#888888" border="0" cellpadding="2"  cellspacing="1">
-<tr bgcolor="#ffffdd">
-<td><b>Directory</b></td>
-<td><b>Description</b></td>
-<td><b>Location</b></td>
-<td><b>Date</b></td>
-<td><b>Trip-flag</b><td>
+
+<!-- 'add' form section -->
+<form method="post" action="./index.php?do=gal">
+<table>
+<tr class="tb_header">
+<td>Directory</td>
+<td>Description</td>
+<td>Location</td>
+<td>Date (YYYY-MM-DD)</td>
+<td>Trip flag</td>
 </tr>
 <tr>
-<td align="center"><input type="text" name="dir" value="" size="10"></td>
-<td align="center"><input type="text" name="descr" value="" size="30"></td>
-<td align="center"><input type="text" name="locat" value="" size="20"></td>
-<td align="center"><input type="text" name="date" value="" size="10"></td>
-<td align="center"><input type="text" name="trip" value="" size="1"></td>
+<td><input type="text" name="dir_id" size="10"></td>
+<td><input type="text" name="galname" size="30"></td>
+<td><input type="text" name="locat" size="20"></td>
+<td><input type="text" name="date" size="10"></td>
+<td><select id="dropdown" name="trip">
+	<option value="0">0</option>
+	<option value="1">1</option>
+	<option value="2" selected>2</option>
+</select></td>
 </tr>
 </table>
-<div align="right"><input type="submit" name="add" value="-     Add     -"></div>
+<div><input type="submit" name="add" value="-     Add     -"></div>
 </form>
-</td></tr></table>
-<br />
 
-<!-- edit section (html) -->
-<table bgcolor="#888888" border="0" cellpadding="2" cellspacing="1">
-<tr bgcolor="#ffffdd">
-<td><b>Directory</b><br />view</td>
-<td><b>Description</b><br />edit</td>
-<td><b>Location</b></td>
-<td><b>Date</b></td>
-<td><b>Trip-flag</b></td>
-<td><b>Delete</b></td>
-<td></td>
+<!-- 'edit' form section -->
+<table>
+<tr class="tb_header">
+<td>Directory</td>
+<td>Description</td>
+<td>Location</td>
+<td>Date</td>
+<td>Trip flag</td>
+<td>Edit</td>
+<td>Delete</td>
 </tr>
 
 <?php
-// "edit" section
-$tbl_row=0;
-$counter=1;
-$row_color1=' bgcolor=#ffffff';
-$row_color2=' bgcolor=#eeeeee';
-$query="SELECT * FROM glrs ORDER BY dir";
-$result=mysql_query($query, $dbid);
-while ($row = mysql_fetch_row($result))
-        {
-        $dire=$row[0];
-        $descre=$row[1];
-        $locate=$row[2];
-        $datee=$row[3];
-        $tripe=$row[4];
+// edit section, table building
+// fill galeries table
+try {
+    $dbh = new PDO('mysql:host='.$mysql_h.';dbname='.$mysql_db, $mysql_u, $mysql_p);
+    $dbh->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-// fill rows in different colours
-$tbl_row++;
-if (ceil($tbl_row/2)==($tbl_row/2)) { echo "<tr".$row_color1.">\n"; } else { echo "<tr".$row_color2.">\n";}		
+    $query = "SELECT * FROM glrs ORDER BY dir";
+    $galleries = $dbh->query($query)->fetchAll(PDO::FETCH_ASSOC);
+    $dbh = null;
+    } catch (PDOException $e) {
+    print "Error!: " . $e->getMessage() . "<br/>";
+    die();
+    }
+foreach ($galleries as $row_counter => $v){
+    echo "<tr>\n";
+    echo "<td class=\"normal\">".($row_counter+1)." / ".$v['dir']."</td>\n";
+    echo "<td class=\"normal\"> ".$v['descr']."</td>\n";
+    echo "<td class=\"normal\">".$v['locat']."</td>\n";
+    echo "<td class=\"normal\">".$v['dat']."</td>\n";
+    echo "<td class=\"normal\">".$v['trip']."</td>\n";
+    echo "<td class=\"normal\"><span class=\"warning\"><a href=\"./index.php?do=galedit&dir_id=".$v['dir']."\">Edit</a></span> <span class=\"notice\"><a href=\"../index.php?do=thumb&dir=".$v['dir']." \" target=\"_new\">View</a></span></td>\n";
+    echo "<td><a class=\"normal\" href=\"./index.php?do=gal&delete=".$v['dir']."\" alt=\"Delete\">x</a></td>\n</tr>\n";
+}
 
-printf("<td align=\"right\"><a href=\"thumb.php?gal=%s\" target=\"_new\"> %s </a></td>\n", $dire,$dire);
-printf("<td><a href=\"gal_edit.php?gal=%s\">%s</a></td>\n", $dire,$descre);
-printf("<td>%s</td>\n", $locate);
-printf("<td>%s</td>\n", $datee);
-printf("<td align=\"center\">%s</td>\n", $tripe);
-printf("<td align=\"center\"><a href=\"galadm.php?delete=%s\" alt=\"Delete\">X</a></td>\n", $dire);
-printf("<td align=\"center\"><a href=fileadm.php?glob_dir=%s><font size=\"-2\">Edit<br />files</font></a></td>\n", $dire);
-printf("</tr>");
-        $counter++;
-        }
-printf("</table><p>%s galleries</p>\n", $counter-1);
 ?>
+</table><p><?php echo $row_counter+1; ?> galleries.</p>
 </body>
 </html>

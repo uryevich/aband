@@ -5,12 +5,12 @@
 if (isset($_ENV["REQUEST_URI"])) { $now_file = substr($_ENV["REQUEST_URI"], 1); }
 else { $now_file = substr($_SERVER["SCRIPT_NAME"], 1); }
 $menu_items=array (
-"about.php","Who?","- About -",
-"news.php","What's up?","- News -",
-"trips.php","Trips photos","- Trips -",
-"texts.php","Some text to read","- Texts -",
-"linx.php","Other Industrial Related Sites","- Links -",
-"thanx.php","Thanks to peoples","- Thanks -",
+"./index.php?do=about","Who?","- About -",
+"./index.php?do=news","What's up?","- News -",
+"./index.php?do=trips","Trips photos","- Trips -",
+"./index.php?do=texts","Some text to read","- Texts -",
+"./index.php?do=links","Other Industrial Related Sites","- Links -",
+"./index.php?do=thanks","Thanks to peoples","- Thanks -",
 // "gbook.php","Have some words?","- G book -",
 // "forum.php","Discus the theme!","- Forum -"
 );

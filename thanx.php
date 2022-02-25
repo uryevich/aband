@@ -1,10 +1,18 @@
+<?php
+if (!defined("LAND_PAGE")) { // check call from index, not self
+	header('Location: ./index.php'); 
+	exit; 
+}
+error_reporting(E_ALL); //debug
+// error_reporting(0);
+?>
 <!DOCTYPE html>
 <html>
 <head>
 <title>Abandoned - Thanks</title>
  <meta charset="UTF-8">
  <meta name="viewport" content="width=device-width, initial-scale=1.0">
- <meta name="keywords" content="adventure, industrial, places, urban, abandoned, plant, base, zone, завод, зона, место, брошенные, заброшенные, недостроенный, база">
+ <meta name="keywords" content="adventure, industrial, places, urban, abandoned, plant, base, zone, Р·Р°РІРѕРґ, Р·РѕРЅР°, РјРµСЃС‚Рѕ, Р±СЂРѕС€РµРЅРЅС‹Рµ, Р·Р°Р±СЂРѕС€РµРЅРЅС‹Рµ, РЅРµРґРѕСЃС‚СЂРѕРµРЅРЅС‹Р№, Р±Р°Р·Р°">
  <meta NAME="Description" CONTENT="Photo base of abandonned plants, unfinished buildings, industrial sites">
 <style type=text/css>
 body {

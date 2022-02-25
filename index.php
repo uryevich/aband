@@ -1,4 +1,5 @@
 <?php
+<<<<<<< HEAD
  error_reporting(E_ALL);
 include 'db_ini.php';
 $d=0;
@@ -188,48 +189,29 @@ echo '<!-- <hr width="90%" align="center"> --><br>
 if ($r==0) {
 echo '
 	<td bgcolor="#747687" rowspan="'.$t_dbrows.'"><img border=0 height=2 src="sp.gif" width=2></td>';
+=======
+error_reporting(E_ALL); //debug
+
+// load pages only from index 
+define("LAND_PAGE", TRUE);
+
+// get 'do' from URL
+$do = $_GET['do'] ?? 'none';
+
+// include module/page, schosen by 'do' 
+switch ($do)
+{
+        // case 'start' : include "main.php"; break;
+		case 'about' : include "about.php"; break;
+        case 'links' : include "linx.php"; break;
+        case 'news' : include "news.php"; break;
+		case 'pan' : include "pan.php"; break;
+		case 'pic' : include "pic.php"; break;
+		case 'texts' : include "texts.php"; break;
+        case 'thanks' : include "thanx.php"; break;
+        case 'thumb' : include "thumb.php"; break;
+        case 'trips' : include "trips.php"; break;
+        default : include "main.php";
+>>>>>>> master
 }
-echo '
-	<td align="left" class="stext" width="80%">'.$descr.'</td>
- </tr>';
-      }
-   }
 ?>
-</table>
-<!-- <hr width="90%" align="center"> -->
-<br><br>
-   <?php require ('menu.php'); ?>
-   <?php require ('copyright.php'); ?>
-<!--
-<table align="center" bgcolor="#484a54" cellpadding=5 class="ctext">
-<tr><td>
-</td></tr></table>
--->
-<hr>
-<div align="center">
-<!-- google_ad_start -->
-<script type="text/javascript"><!--
-google_ad_client = "pub-9659481331039989";
-/* 468x60, created 4/1/10 */
-google_ad_slot = "6602157302";
-google_ad_width = 468;
-google_ad_height = 60;
-//-->
-</script>
-<script type="text/javascript"
-src="http://pagead2.googlesyndication.com/pagead/show_ads.js">
-</script>
-<!-- google_ad_end -->
-</div>
-<div align="right"><?php include 'hotlog.php'; ?></div>
-<script type="text/javascript">
-var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
-document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
-</script>
-<script type="text/javascript">
-try {
-var pageTracker = _gat._getTracker("UA-15607830-1");
-pageTracker._trackPageview();
-} catch(err) {}</script>
-</body>
-</html>

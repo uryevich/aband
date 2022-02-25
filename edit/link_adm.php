@@ -39,7 +39,7 @@ require 'db_ini.php';
 
 // 5 cases: 
 // 1. edit
-// 2. active status
+// 2. activate status
 // 3. delete
 // first load
 // add
@@ -143,7 +143,7 @@ if (isset ($_POST["add"])) {
 	<td><b>&nbsp;Cat1</b></td>
 	<td><b>&nbsp;Cat2</b></td>
 	<td><b>&nbsp;Cat3</b></td>
-	<td><b>&nbsp;Cat4</b></td>
+	<td><b>&nbsp;Rating</b></td>
 </tr>
 <tr>
 	<td align=\"center\"><input type="text" name="link" size="15"></td>
@@ -168,7 +168,7 @@ if (isset ($_POST["add"])) {
 <td><b>Cat 1</b></td>
 <td><b>Cat 2</b></td>
 <td><b>Cat 3</b></td>
-<td><b>Cat 4</b></td>
+<td><b>Rating</b></td>
 <td><b>Active</b></td>
 <td><b>Delete</b></td>
 </tr>
@@ -180,6 +180,7 @@ $tbl_row=0;
 $counter=1;
 $row_color1=' bgcolor=#ffffff';
 $row_color2=' bgcolor=#eeeeee';
+$row_color_nonact=' bgcolor=#ffeeee';
 while ($row = mysql_fetch_row($result))
         {
         $id_e=$row[0];
@@ -195,10 +196,13 @@ while ($row = mysql_fetch_row($result))
 
 // fill rows in different colours
 $tbl_row++;
-if (ceil($tbl_row/2)==($tbl_row/2)) { echo "<tr".$row_color1.">\n"; } else { echo "<tr".$row_color2.">\n";}
+
+if ($active_e==1) {
+	if (ceil($tbl_row/2)==($tbl_row/2)) { echo "<tr".$row_color1.">\n"; } else { echo "<tr".$row_color2.">\n";}
+} else { echo "<tr".$row_color_nonact.">\n"; }
 
 printf("<td align=\"right\"><sub>%s</sub> %s</td>", $counter,$id_e);
-printf("<td align=\"left\"><a href=\"%s\" target=\"_new\">%s</a></td>\n", $link_e,$link_e);
+printf("<td align=\"left\"><a href=redirect.php?link=%s target=\"_new\">%s</a></td>\n", $link_e,$link_e);
 printf("<td align=\"left\"><a href=\"link_edit.php?id=%s\">%s</a></td>\n", $id_e,$name_e);
 printf("<td align=\"left\">%s</td>\n", $descr_e);
 printf("<td align=\"left\">%s</td>\n", $img_e);

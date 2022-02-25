@@ -1,77 +1,92 @@
 <?php
-//  error_reporting(0);
-  session_start();
-  if ($_SESSION["user_auth"] != true) { die ('<div align="center">access denied<br><a href="/">Log in</a></div>'); }
+error_reporting(E_ALL); // debug
 
-// if something posted
-print_r ($_GET["gal"]);
-if (isset ($_GET["gal"])) {
-   $id=$_GET["gal"];
+// if dir_id given
+print_r ($_GET["dir_id"]); // debug
+if (isset ($_GET["dir_id"])) {
+   $dir_id=$_GET["dir_id"];
    }
-   else { die ('<font color=#bb0000><b>No gallery id given</b></font>'); }
+   else { 
+   header('Location: ./index.php?do=gal');
+   exit;   
+}
 
 ?>
 <html>
 <head>
 <title>Edit gallery</title>
-<meta name=content charset=1251>
-<style type="text/css">
-<!--
-body,td { font-family: Verdana, Arial; font-size : 12px;}
-a:hover { color : #ff3300; }
--->
-</style>
+<meta charset="UTF-8"/>
+<link rel="stylesheet" href="./admin.css" type="text/css"/>
 </head>
-<body bgcolor="#eeeeee">
+<body>
 <?php
-require 'db_ini.php';
+include 'menu.php';
+require '../db_ini_.php'; // debug db file
 
+try {
+	$dbh = new PDO('mysql:host='.$mysql_h.';dbname='.$mysql_db, $mysql_u, $mysql_p);
+	$dbh->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-$query="SELECT * FROM glrs WHERE dir=$id";
-echo "<br><pre>".$query."</pre><br>";
-$result=mysql_query($query, $dbid);
-
+	
+	$query = "SELECT * FROM glrs WHERE `dir` = ?";
+	$stmt = $dbh->prepare($query);
+	$stmt->execute([$dir_id]);
+	$row = $stmt->fetch(PDO::FETCH_LAZY);
+	$dbh = null;
+	} catch (PDOException $e) {
+	print "Error!: " . $e->getMessage() . "<br/>";
+	die();
+	}
+// drop if dir_id not exist (just in case)
+if (!isset ($row[0])) { 
+	header('Location: ./index.php?do=gal');
+	exit;
+	}
 ?>
-<table bgcolor="#dddddd" cellpadding="1" cellspacing="1"><tr><td>
-<form method="post" action="<?php echo 'galadm.php'; ?>">
-<table bgcolor="#cccccc" border="0" cellpadding="0" cellspacing="2">
-<tr bgcolor="#ffffdd">
-<td><b>Directory</b></td>
-<td><b>Description</b></td>
-<td><b>Location</b></td>
-<td><b>Date</b></td>
-<td><b>Trip</b></td>
+<form method="post" action="./index.php?do=gal">
+<table>
+<tr class="tb_header">
+<td>Directory</td>
+<td>Description</td>
+<td>Location</td>
+<td>Date</td>
+<td>Trip</td>
 </tr>
 <?php
-$x=0;
-$row = mysql_fetch_array($result);
+$dir_e=$row[0];
+$descr_e=$row[1];
+$locat_e=$row[2];
+$date_e=$row[3];
+$trip_e=$row[4];
 
-// echo "<br>-<br>";
-// print_r ($row);
-// echo "<br>-<br>";
+echo "<tr>\n";
+echo "<td>$dir_e\n";
+echo " <input type=\"text\" name=\"dir_id\" value=\"$dir_e\" size=\"10\"></td>\n";
+echo "<td><input type=\"text\" name=\"galname\" value=\"$descr_e\" size=\"45\"></td>\n";
+echo "<td><input type=\"text\" name=\"locat\" value=\"$locat_e\" size=\"25\"></td>\n";
+echo "<td><input type=\"text\" name=\"date\" value=\"$date_e\" size=\"10\"></td>\n";
+echo "<td align=\"center\">";
+// echo "<input type=\"text\" name=\"trip\" value=\"$trip_e\" size=\"2\">\n";
+echo "
+<select id=\"dropdown\" name=\"trip\">";
+for ($val=0; $val<=2; $val++) {
+	if ($val==$trip_e) {
+		echo "<option value=\"$val\" selected>$val</option>";
+	} else {
+		echo "<option value=\"$val\">$val</option>";
+	}
+}
+echo "<!--	<option value=\"0\">0</option>
+	<option value=\"1\">1</option>
+	<option value=\"2\" selected>2</option> -->
+	</select>
+	</td>
+";
+echo "</tr></table>";
 
-        $dir_e=$row[0];
-        $descr_e=$row[1];
-        $locat_e=$row[2];
-        $date_e=$row[3];
-        $trip_e=$row[4];
-
-
-printf("<tr>
-");
-printf("<td align=\"center\">%s\n", $dir_e);
-printf("<input type=\"text\" name=\"dir\" value=\"%s\" size=\"10\"></td>\n", $dir_e);
-printf("<td align=\"center\"><input type=\"text\" name=\"descr\" value=\"%s\" size=\"45\"></td>\n", $descr_e);
-printf("<td align=\"center\"><input type=\"text\" name=\"locat\" value=\"%s\" size=\"25\"></td>\n", $locat_e);
-printf("<td align=\"center\"><input type=\"text\" name=\"date\" value=\"%s\" size=\"10\"></td>\n", $date_e);
-printf("<td align=\"center\"><input type=\"text\" name=\"trip\" value=\"%s\" size=\"2\"></td>\n", $trip_e);
-printf("</tr>
-</table>");
 ?>
-<div align="right"><input type="submit" name="edit" value="-     Edit     -">
+<div><input type="submit" name="edit" value="Edit">
 <input type="submit" name="" value="Cancel"></div>
 </form>
-</td></tr></table>
-
 </body>
 </html>
